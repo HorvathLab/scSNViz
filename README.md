@@ -26,6 +26,13 @@ install_github("HorvathLab/scSNViz", ref = "dev")
 
 ## Quickstart
 
+#### Load libraries
+
+```
+library(Seurat)
+library(readr)
+```
+
 #### Load optional libraries
 
 
@@ -178,13 +185,21 @@ generate_report(plot_object = plots,
 The following is a workflow that calculates and overlays basic SNV metrics on top of a dimensionality reduction integrated from multiple samples.
 
 ####
-```
-load.lib<-c("scSNViz","SingleCellExperiment", "stringr", "HGNChelper", "Matrix", "umap", "Rtsne", "Seurat", "sctransform", "ggplot2", "readr",
-            "dplyr", "plotly", "htmlwidgets", "htmltools", "jsonlite", "glmGamPoi", "slingshot", "copykat", "listviewer","openxlsx","randomcoloR") # the installation of ("glmGamPoi") is highly recommended
 
-install.lib <- load.lib[!load.lib %in% installed.packages()]
-for(lib in install.lib) install.packages(lib,dependencies=TRUE)
-sapply(load.lib,require,character=TRUE)
+```
+library(Seurat)
+library(readr)
+
+#if copykat option is selected
+library(devtools)
+install_github("navinlabcode/copykat")
+library(copykat)
+
+#if slingshot option is selected
+BiocManager::install("slingshot")
+BiocManager::install("SingleCellExperiment")
+library(slingshot)
+library(SingleCellExperiment)
 
 output_dir = "output_integrated_samples"    # or output directory of your choice
 ```
