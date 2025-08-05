@@ -37,7 +37,7 @@ library(copykat)
 
 #if slingshot option is selected
 BiocManager::install("slingshot")
-BiocManager::install("SingleCellEnvironment")
+BiocManager::install("SingleCellExperiment")
 library(slingshot)
 library(SingleCellEnvironment)
 ```
