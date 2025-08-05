@@ -10,6 +10,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports: 
     BiocManager,
+    checkGeneSymbols,
     copykat,
     dplyr,
     ggplot2,
@@ -23,6 +24,7 @@ Imports:
     parallel,
     plotly,
     randomcoloR,
+    readr,
     Rtsne,
     Seurat,
     SingleCellExperiment,
