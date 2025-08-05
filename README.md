@@ -13,6 +13,8 @@ scSNViz is a specialized tool for the visualization and analysis of single-cell 
 library(devtools)
 install_github("HorvathLab/scSNViz", ref = "dev")
 library(scsnviz)
+
+BiocManager::install("glmGamPoi")
 ```
 If the above fails due to rate limits, try generating a GitHub Personal Access Token (PAT), add it into your environment and then run again. 
 
@@ -35,8 +37,6 @@ install_github("navinlabcode/copykat")
 library(copykat)
 
 #if slingshot option is selected
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
 BiocManager::install("slingshot")
 BiocManager::install("SingleCellEnvironment")
 ```
