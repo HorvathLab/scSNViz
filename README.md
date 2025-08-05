@@ -11,7 +11,8 @@ scSNViz is a specialized tool for the visualization and analysis of single-cell 
 ```
 # Enter commands in R (or R studio, if installed)
 library(devtools)
-install_github("HorvathLab/NGS", ref = "scSNViz_R_v1.0.0", subdir = "scSNViz")
+install_github("HorvathLab/scSNViz", ref = "dev")
+library(scsnviz)
 ```
 If the above fails due to rate limits, try generating a GitHub Personal Access Token (PAT), add it into your environment and then run again. 
 
@@ -19,26 +20,31 @@ Another way to do this is to configure R to use the Windows Internet API for dow
 
 ```
 options(download.file.method = "wininet")   # can try other methods such as 'libcurl', 'wget', etc.
-install_github("HorvathLab/NGS", ref = "scSNViz_R_v1.0.0", subdir = "scSNViz")
+install_github("HorvathLab/scSNViz", ref = "dev")
 ```
 
 ## Quickstart
 
-#### Load libraries, define paths to input files, and define the output directory.
-The input files are located in the input folder on github. The snv file is an output from SCReadCounts. The user may provide a .tsv file that is not from SCReadCounts as long as it is also a .tsv and contains the following columns: CHROM, POS, REF, ALT, ReadGroup, SNVCount, RefCount.
+#### Load optional libraries
+
+
 ```
-load.lib<-c("scSNViz","SingleCellExperiment", "stringr", "HGNChelper", "Matrix", "umap", "Rtsne", "Seurat", "sctransform", "ggplot2", "readr",
-            "dplyr", "plotly", "htmlwidgets", "htmltools", "jsonlite", "glmGamPoi", "slingshot", "listviewer","openxlsx","randomcoloR", "parallel") # the installation of ("glmGamPoi") is highly recommended
-
-install.lib <- load.lib[!load.lib %in% installed.packages()]
-for(lib in install.lib) install.packages(lib,dependencies=TRUE)
-sapply(load.lib,require,character=TRUE)
-
-#CopyKat is an optional tool in analysis and must be installed separately
+#if copykat option is selected
 library(devtools)
 install_github("navinlabcode/copykat")
 library(copykat)
 
+#if slingshot option is selected
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("slingshot")
+BiocManager::install("SingleCellEnvironment")
+```
+
+#### Define paths to input files, and define the output directory.
+
+The input files are located in the input folder on github. The snv file is an output from SCReadCounts. The user may provide a .tsv file that is not from SCReadCounts as long as it is also a .tsv and contains the following columns: CHROM, POS, REF, ALT, ReadGroup, SNVcount, and RefCount.
+```
 snv_file <- 'input/sample1_SNVs.tsv'
 srt_obj_file <- 'input/sample1_Seurat_object.rds'
 output_dir = "output"    # or output directory of your choice
