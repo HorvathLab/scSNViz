@@ -1,32 +1,29 @@
-Package: scSNViz
-Type: Package
-Title: Comprehensive visualization of expressed single-cell SNVs and their statistical analysis
-Version: 1.0.0
-Maintainer: Tushar Sharma <tushar2016sharma@gmail.com>
-Description: scSNViz is an open-source software developed in R that leverages existing R packages for the processing of single-cell gene and SNV transcriptomics data while introducing novel features for analysis and visualization of scSNVs. scSNViz aims to enable users to explore and interpret SNV-related cellular heterogeneity and facilitate the integration of SNV information into existing scRNA-seq analytical workflows.
+Package: scsnviz
+Title: What the Package Does (One Line, Title Case)
+Version: 0.0.0.9000
+Authors@R: 
+    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
+Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports: 
-        SingleCellExperiment, 
-        Seurat, 
-        slingshot, 
-        copykat,
-        stringr,
-        HGNChelper,
-        Matrix,
-        umap,
-        Rtsne,
-        ggplot2, 
-        dplyr, 
-        plotly,
-        randomcoloR,
-        listviewer, 
-        htmlwidgets, 
-        htmltools
-Suggests: testthat
-SystemRequirements: Rscript
-NeedsCompilation: no
-Author: First Last [aut, cre] (<YOUR-ORCID-ID>)
-Depends: R (>= 3.5.0)
+    BiocManager,
+    copykat,
+    dplyr,
+    ggplot2,
+    HGNChelper,
+    htmltools,
+    htmlwidgets,
+    Matrix,
+    plotly,
+    randomcoloR,
+    Rtsne,
+    Seurat,
+    SingleCellExperiment,
+    slingshot,
+    stringr,
+    umap
+Suggests: 
+    stats

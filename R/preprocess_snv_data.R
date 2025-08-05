@@ -23,6 +23,7 @@
 #' @param generate_statistics Logical; if TRUE, generate SNV significance statistics. Default: FALSE.
 #' @param th_snv_cells Threshold for maximum percentage of cells that contain an SNV for bad reads. Default: 10
 #' @param output_dir Directory where the statistics files will be saved if `generate_statistics` is TRUE. Default: Current working directory.
+#' @param integrated_reduction_name Name for the integrated reduction in the Seurat object. Default: 'integrated'
 #' @return A Seurat object with processed metadata and embeddings, processed SNV data, aggregated SNV data, and a data frame for plotting.
 #'
 #' @examples
@@ -34,6 +35,7 @@
 #'                     th_vars = 1,
 #'                     th_reads = 2,
 #'                     enable_sctype = T,
+#'                     integrated_reduction_name='integrated', 
 #'                     tissue_type = "Immunesystem",
 #'                     generate_statistics = T,
 #'                     th_snv_cells = 10,
