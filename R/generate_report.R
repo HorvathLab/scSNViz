@@ -322,6 +322,7 @@ generate_report <- function(plot_object, ind_snv_object = NULL,
   })
 
   # CSS layout style
+  suppressWarnings({
   grid_html <- tags$html(
     tags$head(
       tags$style(HTML("
@@ -390,6 +391,7 @@ generate_report <- function(plot_object, ind_snv_object = NULL,
   }
   output_file <- paste0(output_dir, '/Exploratory_Combined_Plots.html')
   save_html(grid_html, file = output_file)
+  })
 
   cat("\nCombined output saved.\n")
 

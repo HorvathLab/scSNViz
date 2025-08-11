@@ -233,7 +233,7 @@ individual_snv_plots <- function(seurat_object, processed_snv, output_dir = NULL
     # N_REF plots
     f_refreads <- plot_ly(type = "scatter3d", mode = "markers+lines")
     chk_vals = subset(y, vaf == 0 & is.numeric(ref_reads)==TRUE & is.finite(ref_reads)==TRUE,)$ref_reads
-    max_metric_val = max(chk_vals, na.rm=T)
+    max_metric_val = suppressWarnings(max(chk_vals, na.rm=T))
     for (i in 1:length(unique(y$sampleid)[!is.na(unique(y$sampleid))])) {
       this.id = unique(y$sampleid)[!is.na(unique(y$sampleid))][i]
       if (any(subset(y, vaf == 0 & ref_reads > 0 & sampleid==this.id)$ref_reads==max_metric_val)){

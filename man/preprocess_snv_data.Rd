@@ -37,6 +37,8 @@ preprocess_snv_data(
 
 \item{enable_integrated}{Logical; enable scType analysis for cell types. Default: FALSE.}
 
+\item{integrated_reduction_name}{Name for the integrated reduction in the Seurat object. Default: 'integrated'}
+
 \item{color_scale}{Color scale for plots. Options include Blues, Reds, etc. Default: YlOrRd.}
 
 \item{generate_statistics}{Logical; if TRUE, generate SNV significance statistics. Default: FALSE.}
@@ -61,6 +63,7 @@ processed_data <- preprocess_snv_data(
                     th_vars = 1,
                     th_reads = 2,
                     enable_sctype = T,
+                    integrated_reduction_name='integrated', 
                     tissue_type = "Immunesystem",
                     generate_statistics = T,
                     th_snv_cells = 10,
