@@ -304,7 +304,7 @@ generate_statistics_fnction <- function(snv,th.snv.cells=th_snv_cells){
     source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
     source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_score_.R")
     gs_list <- tryCatch({
-      gene_sets_prepare(db_url, tissue_type)
+      suppressWarnings(gene_sets_prepare(db_url, tissue_type))
     }, error = function(e) {
       stop("Error in scType database processing: ", e$message,
            "\nCheck if the database is accessible and matches the tissue type.")
