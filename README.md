@@ -46,7 +46,7 @@ library(copykat)
 BiocManager::install("slingshot")
 BiocManager::install("SingleCellExperiment")
 library(slingshot)
-library(SingleCellEnvironment)
+library(SingleCellExperiment)
 ```
 
 #### Define paths to input files, and define the output directory.
