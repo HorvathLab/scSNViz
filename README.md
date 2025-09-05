@@ -19,8 +19,6 @@ If the above fails due to download timeout, try to increase the global options t
 
 If the above fails due to rate limits, try generating a GitHub Personal Access Token (PAT), add it into your environment and then run again. 
 
-```
-
 ## Quickstart
 
 #### Load libraries
