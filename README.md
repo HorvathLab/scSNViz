@@ -11,17 +11,14 @@ scSNViz is a specialized tool for the visualization and analysis of single-cell 
 ```
 # Enter commands in R (or R studio, if installed)
 library(devtools)
-install_github("HorvathLab/scSNViz", ref = "dev") # to increase download timeout e.g. options(timeout=3600))
+install_github("HorvathLab/scSNViz", ref = "dev")
 library(scsnviz)
 BiocManager::install("glmGamPoi")
 ```
+If the above fails due to download timeout, try to increase the global options timeout. E.g. options(timeout=3600)
+
 If the above fails due to rate limits, try generating a GitHub Personal Access Token (PAT), add it into your environment and then run again. 
 
-Another way to do this is to configure R to use the Windows Internet API for download: 
-
-```
-options(download.file.method = "wininet")   # can try other methods such as 'libcurl', 'wget', etc.
-install_github("HorvathLab/scSNViz", ref = "dev")
 ```
 
 ## Quickstart
