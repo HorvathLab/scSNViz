@@ -29,7 +29,7 @@ install_github("HorvathLab/scSNViz", ref = "dev")
 #### Load libraries
 
 ```
-library(c('ggplot', 'HGNChelper', 'parallel', 'readr', 'Seurat')
+library(c('ggplot', 'HGNChelper', 'parallel', 'readr', 'Seurat'))
 ```
 
 #### Load optional libraries
