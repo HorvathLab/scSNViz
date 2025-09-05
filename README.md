@@ -11,7 +11,7 @@ scSNViz is a specialized tool for the visualization and analysis of single-cell 
 ```
 # Enter commands in R (or R studio, if installed)
 library(devtools)
-install_github("HorvathLab/scSNViz", ref = "dev")
+install_github("HorvathLab/scSNViz", ref = "dev") # to increase download timeout e.g. options(timeout=3600))
 library(scsnviz)
 BiocManager::install("glmGamPoi")
 ```
