@@ -13,6 +13,7 @@
 #' @importFrom Rtsne Rtsne
 #' @importFrom randomcoloR distinctColorPalette
 #' @importFrom slingshot slingshot slingCurves
+#' @importFrom parallel mclapply
 #'
 #' @param seurat_object Processed Seurat object with SNV metadata.
 #' @param processed_snv Processed SNV data.
