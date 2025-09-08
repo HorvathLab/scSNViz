@@ -24,7 +24,7 @@ If the above fails due to rate limits, try generating a GitHub Personal Access T
 #### Load libraries
 
 ```
-packages <- c('ggplot', 'HGNChelper', 'parallel', 'readr', 'Seurat')
+packages <- c('ggplot2', 'HGNChelper', 'parallel', 'readr', 'Seurat')
 lapply(packages, library, character.only=TRUE)
 ```
 
