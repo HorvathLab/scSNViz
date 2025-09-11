@@ -19,9 +19,9 @@ If the above fails due to download timeout, try to increase the global options t
 
 If the above fails due to rate limits, try generating a GitHub Personal Access Token (PAT), add it into your environment and then run again. 
 
-## Quickstart
+## Load Libraries
 
-#### Load libraries
+#### Load required libraries
 
 ```
 packages <- c('ggplot2', 'HGNChelper', 'parallel', 'readr', 'Seurat')
@@ -43,6 +43,7 @@ BiocManager::install("SingleCellExperiment")
 library(slingshot)
 library(SingleCellExperiment)
 ```
+## Quickstart (single sample)
 
 #### Define paths to input files, and define the output directory.
 
