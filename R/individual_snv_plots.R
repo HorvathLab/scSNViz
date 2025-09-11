@@ -29,7 +29,7 @@
 #' \dontrun{
 #' ind_snv_plots <- individual_snv_plots(
 #'   seurat_object = processed_data$SeuratObject,
-#'   processed_snv = processed_data$ProcessedSNV,
+#'   processed_snv = processed_data$SigSNV,
 #'   output_dir = "output/individual_plots",
 #'   slingshot = T,
 #'   dimensionality_reduction = "UMAP",
