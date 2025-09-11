@@ -281,6 +281,7 @@ generate_statistics_fnction <- function(snv,th.snv.cells=th_snv_cells){
         snv$sampleid = data.frame(do.call('rbind',strsplit(as.character(snv$ReadGroup),'_',fixed=TRUE)))$X1
         snv_input = snv[snv$sampleid == unique(srt$orig.ident)[i],]
         df.final <- generate_statistics_fnction(snv=snv_input)
+        df.export <- df.final
         write.table(df.final, file = file.path(
         output_dir, paste0("SNV_Statistics_",unique(srt$orig.ident)[i],".txt")), sep = "\t", row.names = F)
         significant_snvs <- df.final[df.final$p_adj < 0.05, ]
@@ -289,6 +290,7 @@ generate_statistics_fnction <- function(snv,th.snv.cells=th_snv_cells){
       }
     } else {
       df.final <- generate_statistics_fnction(snv)
+      df.export <- df.final
       write.table(df.final, file = file.path(
       output_dir, "SNV_Statistics.txt"), sep = "\t", row.names = F)
       significant_snvs <- df.final[df.final$p_adj < 0.05, ]
@@ -355,5 +357,5 @@ generate_statistics_fnction <- function(snv,th.snv.cells=th_snv_cells){
   if (!enable_integrated) {snv$sampleid <- srt@project.name}
 
   return(list(SeuratObject = srt, ProcessedSNV = snv,
-              AggregatedSNV = df.snv, PlotData = plot_data))
+              AggregatedSNV = df.snv, PlotData = plot_data, SigSNV = df.export))
 }

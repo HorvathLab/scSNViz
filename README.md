@@ -128,7 +128,7 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
 ```
 #Individual SNV's plottable capped at 50 unique.
 ind_snv_plots <- individual_snv_plots(seurat_object = processed_data$SeuratObject,
-                                      processed_snv = processed_data$ProcessedSNV,
+                                      processed_snv = processed_data$SigSNV,
                                       output_dir = output_dir,
                                       slingshot = TRUE,
                                       save_each_plot = TRUE,
