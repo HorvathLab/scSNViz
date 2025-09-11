@@ -180,31 +180,12 @@ generate_report(plot_object = plots,
 ## Integration of Multiple Samples
 The following is a workflow that calculates and overlays basic SNV metrics on top of a dimensionality reduction integrated from multiple samples.
 
-####
-
-```
-library(Seurat)
-library(readr)
-
-#if copykat option is selected
-library(devtools)
-install_github("navinlabcode/copykat")
-library(copykat)
-
-#if slingshot option is selected
-BiocManager::install("slingshot")
-BiocManager::install("SingleCellExperiment")
-library(slingshot)
-library(SingleCellExperiment)
-
-output_dir = "output_integrated_samples"    # or output directory of your choice
-```
-
-
 #### Prepare integrated data
 The below workflow is shown for unprocessed Seurat objects. Ideally this workflow is started with Read10X()/CreateSeuratObject() or a Seurat object that has not been processed. If the Seurat object has been processed, already, this may result in errors.
 
 ```
+output_dir = "output_integrated_samples"    # or output directory of your choice
+
 sample1 <- readRDS('input/sample1_Seurat_object.rds')
 sample2 <- readRDS('input/sample2_Seurat_object.rds')
 sample1$orig.ident = 'sample1'
