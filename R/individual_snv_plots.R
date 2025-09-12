@@ -29,7 +29,7 @@
 #' \dontrun{
 #' ind_snv_plots <- individual_snv_plots(
 #'   seurat_object = processed_data$SeuratObject,
-#'   processed_snv = processed_data$ProcessedSNV,
+#'   processed_snv = processed_data$SigSNV,
 #'   output_dir = "output/individual_plots",
 #'   slingshot = T,
 #'   dimensionality_reduction = "UMAP",
@@ -67,11 +67,14 @@ individual_snv_plots <- function(seurat_object, processed_snv, output_dir = NULL
   pal <- c("#EBEBEB", "#85C1E9", "#E74C3C", "#B03A2E", "#641E16")
   df.dim <- as.data.frame(Embeddings(seurat_object, reduction = dimensionality_reduction))
   colnames(df.dim) <- c("x", "y", "z")
-  df.snv <- processed_snv
-  df.snv <- df.snv[c("CHROM", "POS", "REF", "ALT", "ReadGroup",
-                     "SNVCount", "RefCount", "VAF", "sampleid")]
-  snvs <- head(unique(df.snv[c("CHROM", "POS", "REF", "ALT")]), 50) #sets limit to 50 snvs
-  snv_options <- paste(snvs$CHROM, snvs$POS, snvs$REF, snvs$ALT, sep = ":")
+
+
+  # df.snv <- processed_snv
+  # df.snv <- df.snv[c("CHROM", "POS", "REF", "ALT", "ReadGroup",
+  #                    "SNVCount", "RefCount", "VAF", "sampleid")]
+  # snvs <- head(unique(df.snv[c("CHROM", "POS", "REF", "ALT")]), 50) #sets limit to 50 snvs
+
+  snv_options <- gsub("_", ":", head(processed_snv$SNV, 50))
 
   individual_SNV_html <- NULL
   curves <- NULL
@@ -233,7 +236,7 @@ individual_snv_plots <- function(seurat_object, processed_snv, output_dir = NULL
     # N_REF plots
     f_refreads <- plot_ly(type = "scatter3d", mode = "markers+lines")
     chk_vals = subset(y, vaf == 0 & is.numeric(ref_reads)==TRUE & is.finite(ref_reads)==TRUE,)$ref_reads
-    max_metric_val = max(chk_vals, na.rm=T)
+    max_metric_val = suppressWarnings(max(chk_vals, na.rm=T))
     for (i in 1:length(unique(y$sampleid)[!is.na(unique(y$sampleid))])) {
       this.id = unique(y$sampleid)[!is.na(unique(y$sampleid))][i]
       if (any(subset(y, vaf == 0 & ref_reads > 0 & sampleid==this.id)$ref_reads==max_metric_val)){

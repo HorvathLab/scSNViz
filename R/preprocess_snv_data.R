@@ -23,6 +23,7 @@
 #' @param generate_statistics Logical; if TRUE, generate SNV significance statistics. Default: FALSE.
 #' @param th_snv_cells Threshold for maximum percentage of cells that contain an SNV for bad reads. Default: 10
 #' @param output_dir Directory where the statistics files will be saved if `generate_statistics` is TRUE. Default: Current working directory.
+#' @param integrated_reduction_name Name for the integrated reduction in the Seurat object. Default: 'integrated'
 #' @return A Seurat object with processed metadata and embeddings, processed SNV data, aggregated SNV data, and a data frame for plotting.
 #'
 #' @examples
@@ -34,6 +35,7 @@
 #'                     th_vars = 1,
 #'                     th_reads = 2,
 #'                     enable_sctype = T,
+#'                     integrated_reduction_name='integrated', 
 #'                     tissue_type = "Immunesystem",
 #'                     generate_statistics = T,
 #'                     th_snv_cells = 10,
@@ -279,6 +281,7 @@ generate_statistics_fnction <- function(snv,th.snv.cells=th_snv_cells){
         snv$sampleid = data.frame(do.call('rbind',strsplit(as.character(snv$ReadGroup),'_',fixed=TRUE)))$X1
         snv_input = snv[snv$sampleid == unique(srt$orig.ident)[i],]
         df.final <- generate_statistics_fnction(snv=snv_input)
+        df.export <- df.final
         write.table(df.final, file = file.path(
         output_dir, paste0("SNV_Statistics_",unique(srt$orig.ident)[i],".txt")), sep = "\t", row.names = F)
         significant_snvs <- df.final[df.final$p_adj < 0.05, ]
@@ -287,6 +290,7 @@ generate_statistics_fnction <- function(snv,th.snv.cells=th_snv_cells){
       }
     } else {
       df.final <- generate_statistics_fnction(snv)
+      df.export <- df.final
       write.table(df.final, file = file.path(
       output_dir, "SNV_Statistics.txt"), sep = "\t", row.names = F)
       significant_snvs <- df.final[df.final$p_adj < 0.05, ]
@@ -302,7 +306,7 @@ generate_statistics_fnction <- function(snv,th.snv.cells=th_snv_cells){
     source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
     source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_score_.R")
     gs_list <- tryCatch({
-      gene_sets_prepare(db_url, tissue_type)
+      suppressWarnings(gene_sets_prepare(db_url, tissue_type))
     }, error = function(e) {
       stop("Error in scType database processing: ", e$message,
            "\nCheck if the database is accessible and matches the tissue type.")
@@ -353,5 +357,5 @@ generate_statistics_fnction <- function(snv,th.snv.cells=th_snv_cells){
   if (!enable_integrated) {snv$sampleid <- srt@project.name}
 
   return(list(SeuratObject = srt, ProcessedSNV = snv,
-              AggregatedSNV = df.snv, PlotData = plot_data))
+              AggregatedSNV = df.snv, PlotData = plot_data, SigSNV = df.export))
 }

@@ -268,7 +268,7 @@ single_snv_plot <- function(seurat_object, processed_snv, snv_of_choice = "CHROM
                      font = list(color = "black")), margin = list(t = 50)
       )
 
-      saveWidget(as_widget(plot), file = file_path, selfcontained = F, libdir = "lib")
+      suppressWarnings(saveWidget(as_widget(plot), file = file_path, selfcontained = F, libdir = "lib"))
     }
 
     for (snv in snv_options) {

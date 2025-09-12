@@ -13,6 +13,7 @@
 #' @importFrom Rtsne Rtsne
 #' @importFrom randomcoloR distinctColorPalette
 #' @importFrom slingshot slingshot slingCurves
+#' @importFrom parallel mclapply
 #'
 #' @param seurat_object Processed Seurat object with SNV metadata.
 #' @param processed_snv Processed SNV data.
@@ -406,11 +407,11 @@ plots <- c(plots, new_plots)
     if (save_each_plot) {
       cell_type_plot <- cell_type_plot %>% layout(
         title = "Cell types (scType)", title = list(font = "black"), margin = list(t = 50))
-      saveWidget(as_widget(cell_type_plot), file = file.path(
+        suppressWarnings(saveWidget(as_widget(cell_type_plot), file = file.path(
         output_dir, "SNV_data_plots", "Cell_types_scType.html"),
-        selfcontained = F, libdir = "lib")
+        selfcontained = F, libdir = "lib"))
     }
-
+    suppressWarnings({
     if (slingshot) {
       s <- slingshot(as.SingleCellExperiment(seurat_object),
                      clusterLabels = "seurat_clusters",
@@ -450,6 +451,7 @@ plots <- c(plots, new_plots)
       }
       lineage_counter <- lineage_counter + 1
     }
+    })
   }
 
   # SNV dimensionality reduction plot integration
