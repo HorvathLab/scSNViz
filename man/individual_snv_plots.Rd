@@ -7,6 +7,7 @@
 individual_snv_plots(
   seurat_object,
   processed_snv,
+  sig_snvs,
   output_dir = NULL,
   slingshot = T,
   dimensionality_reduction = "UMAP",
@@ -19,6 +20,8 @@ individual_snv_plots(
 \item{seurat_object}{Processed Seurat object.}
 
 \item{processed_snv}{Data frame of processed SNV information, typically output from the preprocess_snv_data function.}
+
+\item{sig_snvs}{List of SNVs determined to be showing a signifigant amount of good reads.}
 
 \item{output_dir}{Directory to save plots and HTML (if save_each_plot is TRUE).}
 
@@ -52,6 +55,7 @@ The plots can be saved individually in the specified output_dir if save_each_plo
 ind_snv_plots <- individual_snv_plots(
   seurat_object = processed_data$SeuratObject,
   processed_snv = processed_data$ProcessedSNV,
+  sig_snvs = processed_data$SigSNV,
   output_dir = "output/individual_plots",
   slingshot = T,
   dimensionality_reduction = "UMAP",
