@@ -1,9 +1,10 @@
 Package: scsnviz
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+Title: Scsnviz: Single Cell SNV visualization
+Version: 1.0.0
+Authors@R: c(
+    person("Luke", "Johnson", , "luke.johnson@gwu.edu", role = c("aut", "cre")),
+    person("Siera", "Martinez", , "siera.martinez@email.gwu.edu", role = c("aut")))
+Description: scSNViz is a specialized tool for the visualization and analysis of single-cell expressed SNVs from cell-barcoded scRNA-seq data. scSNViz enables quantitative assessment of SNV expression, 2D and 3D visualization of individual or user-defined groups of variants, expression-based clustering of SNVs, and cross-sample comparisons. Beyond visualization, scSNViz enables the estimation, summarization, and graphical representation of SNV expression metrics, facilitating the study of allelic dynamics across somatic, germline, and RNA-originating SNVs. To support integrative transcriptomic analyses, scSNViz interoperates with established frameworks including Seurat for clustering, Slingshot for trajectory inference, scType for cell type annotation, and CopyKat for copy number profiling.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
