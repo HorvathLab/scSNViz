@@ -10,6 +10,7 @@
 #'
 #' @param seurat_object Processed Seurat object.
 #' @param processed_snv Data frame of processed SNV information, typically output from the preprocess_snv_data function.
+#' @param sig_snvs List of SNVs determined to be showing a signifigant amount of good reads.
 #' @param output_dir Directory to save plots and HTML (if save_each_plot is TRUE).
 #' @param slingshot Logical; whether to include slingshot trajectories. Default: TRUE.
 #' @param dimensionality_reduction Dimensionality reduction method ('UMAP', 'PCA', 'tSNE'). Default: "UMAP".
@@ -29,7 +30,8 @@
 #' \dontrun{
 #' ind_snv_plots <- individual_snv_plots(
 #'   seurat_object = processed_data$SeuratObject,
-#'   processed_snv = processed_data$SigSNV,
+#'   processed_snv = processed_data$ProcessedSNV,
+#'   sig_snvs = processed_data$SigSNV,
 #'   output_dir = "output/individual_plots",
 #'   slingshot = T,
 #'   dimensionality_reduction = "UMAP",
@@ -40,7 +42,7 @@
 #'
 #' @export
 #'
-individual_snv_plots <- function(seurat_object, processed_snv, output_dir = NULL, slingshot = T,
+individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_dir = NULL, slingshot = T,
                                  dimensionality_reduction = "UMAP", dynamic_cell_size = F, save_each_plot = F, enable_integrated = F) {
 
 
@@ -69,12 +71,11 @@ individual_snv_plots <- function(seurat_object, processed_snv, output_dir = NULL
   colnames(df.dim) <- c("x", "y", "z")
 
 
-  # df.snv <- processed_snv
-  # df.snv <- df.snv[c("CHROM", "POS", "REF", "ALT", "ReadGroup",
-  #                    "SNVCount", "RefCount", "VAF", "sampleid")]
-  # snvs <- head(unique(df.snv[c("CHROM", "POS", "REF", "ALT")]), 50) #sets limit to 50 snvs
-
-  snv_options <- gsub("_", ":", head(processed_snv$SNV, 50))
+  df.snv <- processed_snv
+  df.snv <- df.snv[c("CHROM", "POS", "REF", "ALT", "ReadGroup",
+                      "SNVCount", "RefCount", "VAF", "sampleid")]
+  
+  snv_options <- gsub("_", ":", head(sig_snvs$SNV, 50))
 
   individual_SNV_html <- NULL
   curves <- NULL

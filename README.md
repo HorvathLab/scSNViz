@@ -4,6 +4,7 @@ scSNViz is a specialized tool for the visualization and analysis of single-cell 
  
 <img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/scSNViz_PanelA.png' width=50% height=50%>
 
+
 ## Installation
 
 Ubuntu, MacOS and Windows are currently supported.
@@ -29,7 +30,7 @@ BiocManager::install('glmGamPoi')
 ```
 If the above fails due to download timeout, try to increase the global options timeout. E.g. options(timeout=3600)
 
-If the above fails due to rate limits, try generating a GitHub Personal Access Token (PAT), add it into your environment and then run again. 
+If the above fails due to rate limits, try generating a GitHub Personal Access Token (PAT), add it into your environment and then run again.
 
 ## Load Libraries
 
@@ -39,6 +40,7 @@ If the above fails due to rate limits, try generating a GitHub Personal Access T
 packages <- c('copykat', 'ggplot2', 'HGNChelper', 'parallel', 'readr', 'Seurat', 'SingleCellExperiment', 'slingshot')
 lapply(packages, library, character.only=TRUE)
 ```
+
 ## Workflow for a single sample
 
 #### Define paths to input files, and define the output directory.
@@ -124,7 +126,8 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
 ```
 #Individual SNV's plottable capped at 50 unique.
 ind_snv_plots <- individual_snv_plots(seurat_object = processed_data$SeuratObject,
-                                      processed_snv = processed_data$SigSNV,
+                                      processed_snv = processed_data$ProcessedSNV,
+                                      sig_snvs = processed_data$SigSNV,
                                       output_dir = output_dir,
                                       slingshot = TRUE,
                                       save_each_plot = TRUE,
