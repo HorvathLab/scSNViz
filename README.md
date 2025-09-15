@@ -21,12 +21,13 @@ install_github("navinlabcode/copykat")
 
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install("slingshot")
-BiocManager::install("SingleCellExperiment")
+
+BiocManager::install('glmGamPoi')
+BiocManager::install('SingleCellExperiment')
+BiocManager::install('slingshot')
 
 install_github('HorvathLab/scSNViz', ref = 'dev')
 library(scsnviz)
-BiocManager::install('glmGamPoi')
 ```
 If the above fails due to download timeout, try to increase the global options timeout. E.g. options(timeout=3600)
 
