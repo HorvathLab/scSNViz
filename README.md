@@ -6,14 +6,26 @@ scSNViz is a specialized tool for the visualization and analysis of single-cell 
 
 ## Installation
 
-#### Install scSNViz from GitHub
+Ubuntu, MacOS and Windows are currently supported.
+
+If using Debian OS, you may need to install the following libraries:
+sudo apt install libfontconfig1-dev libharfbuzz-dev libfribidi-dev libcurl4-openssl-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev libwebp-dev libcairo2
 
 ```
-# Enter commands in R (or R studio, if installed)
+# Enter commands in R (or R studio)
+install.packages('devtools')
 library(devtools)
-install_github("HorvathLab/scSNViz", ref = "dev")
+
+install_github("navinlabcode/copykat")
+
+if (!require("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("slingshot")
+BiocManager::install("SingleCellExperiment")
+
+install_github('HorvathLab/scSNViz', ref = 'dev')
 library(scsnviz)
-BiocManager::install("glmGamPoi")
+BiocManager::install('glmGamPoi')
 ```
 If the above fails due to download timeout, try to increase the global options timeout. E.g. options(timeout=3600)
 
@@ -24,26 +36,10 @@ If the above fails due to rate limits, try generating a GitHub Personal Access T
 #### Load required libraries
 
 ```
-packages <- c('ggplot2', 'HGNChelper', 'parallel', 'readr', 'Seurat')
+packages <- c('copykat', 'ggplot2', 'HGNChelper', 'parallel', 'readr', 'Seurat', 'SingleCellExperiment', 'slingshot')
 lapply(packages, library, character.only=TRUE)
 ```
-
-#### Load optional libraries
-
-
-```
-#if copykat option is selected
-library(devtools)
-install_github("navinlabcode/copykat")
-library(copykat)
-
-#if slingshot option is selected
-BiocManager::install("slingshot")
-BiocManager::install("SingleCellExperiment")
-library(slingshot)
-library(SingleCellExperiment)
-```
-## Quickstart (single sample)
+## Workflow for a single sample
 
 #### Define paths to input files, and define the output directory.
 
@@ -177,7 +173,7 @@ generate_report(plot_object = plots,
 
 
 
-## Integration of Multiple Samples
+## Workflow for Multiple Samples
 The following is a workflow that calculates and overlays basic SNV metrics on top of a dimensionality reduction integrated from multiple samples.
 
 #### Prepare integrated data
