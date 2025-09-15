@@ -41,6 +41,8 @@ packages <- c('copykat', 'ggplot2', 'HGNChelper', 'parallel', 'readr', 'Seurat',
 lapply(packages, library, character.only=TRUE)
 ```
 
+## Workflow for a single sample
+
 #### Define paths to input files, and define the output directory.
 
 The input files are located in the input folder on github. The snv file is an output from SCReadCounts. The user may provide a .tsv file that is not from SCReadCounts as long as it is also a .tsv and contains the following columns: CHROM, POS, REF, ALT, ReadGroup, SNVcount, and RefCount.
@@ -174,7 +176,7 @@ generate_report(plot_object = plots,
 
 
 
-## Integration of Multiple Samples
+## Workflow for Multiple Samples
 The following is a workflow that calculates and overlays basic SNV metrics on top of a dimensionality reduction integrated from multiple samples.
 
 #### Prepare integrated data
