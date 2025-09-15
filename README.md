@@ -34,8 +34,6 @@ If the above fails due to rate limits, try generating a GitHub Personal Access T
 
 ## Load Libraries
 
-#### Load required libraries
-
 ```
 packages <- c('copykat', 'ggplot2', 'HGNChelper', 'parallel', 'readr', 'Seurat', 'SingleCellExperiment', 'slingshot')
 lapply(packages, library, character.only=TRUE)
