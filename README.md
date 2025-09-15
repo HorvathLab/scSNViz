@@ -14,6 +14,7 @@ sudo apt install libfontconfig1-dev libharfbuzz-dev libfribidi-dev libcurl4-open
 
 ```
 # Enter commands in R (or R studio)
+install.packages('usethis')
 install.packages('devtools')
 library(devtools)
 
@@ -265,6 +266,7 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
 ```
 ind_snv_plots <- individual_snv_plots(seurat_object = processed_data$SeuratObject,
                                       processed_snv = processed_data$ProcessedSNV,
+                                      sig_snvs = processed_data$SigSNV,
                                       output_dir = output_dir,
                                       slingshot = FALSE,
                                       save_each_plot = TRUE,
