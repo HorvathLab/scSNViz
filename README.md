@@ -34,6 +34,8 @@ If the above fails due to download timeout, try to increase the global options t
 
 If the above fails due to rate limits, try generating a GitHub Personal Access Token (PAT), add it into your environment and then run again.
 
+If the above gives errors related to randomcoloR, it may be due to the V8 package dependency. Please refer to the V8 README https://github.com/jeroen/V8.
+
 ## Load Libraries
 
 #### Load required libraries
