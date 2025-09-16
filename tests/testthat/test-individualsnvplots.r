@@ -12,7 +12,7 @@ test_that(desc = 'plot_snv_data test', code = {
     sample1 <- readRDS(srt_obj_file)
     sample1@project.name = 'Sample1'
     sample1$orig.ident = 'Sample1'
-    
+
     sample1[["percent.mt"]] <- PercentageFeatureSet(sample1, pattern = "^MT-")
     sample1 <- subset(sample1, subset = nFeature_RNA > 1000 & nFeature_RNA < 7500 & nCount_RNA <50000 & percent.mt < 15) # Modify numbers appropriate to your violin plot
 
@@ -28,7 +28,7 @@ test_that(desc = 'plot_snv_data test', code = {
                                         th_vars = 0,
                                         th_reads = 0,
                                         enable_sctype = TRUE,
-                                        tissue_type = "Immunesystem", 
+                                        tissue_type = "Immunesystem",
                                         generate_statistics = TRUE,
                                         output_dir = output_dir)
     plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
@@ -36,7 +36,7 @@ test_that(desc = 'plot_snv_data test', code = {
                         processed_data$AggregatedSNV,
                         processed_data$PlotData,
                         output_dir = output_dir,
-                        include_histograms = TRUE,  
+                        include_histograms = TRUE,
                         dimensionality_reduction = "umap",
                         include_cell_types = TRUE,
                         include_copykat = FALSE,
@@ -46,12 +46,13 @@ test_that(desc = 'plot_snv_data test', code = {
                         cell_border = 0,
                         save_each_plot = TRUE)
     ind_snv_plots <- individual_snv_plots(seurat_object = processed_data$SeuratObject,
-                                        processed_snv = processed_data$ProcessedSNV,
-                                        output_dir = output_dir,
-                                        slingshot = TRUE,
-                                        save_each_plot = TRUE,
-                                        dimensionality_reduction = "UMAP",
-                                        dynamic_cell_size = FALSE)
+                                          processed_snv = processed_data$ProcessedSNV,
+                                          sig_snvs = processed_data$SigSNV,
+                                          output_dir = output_dir,
+                                          slingshot = TRUE,
+                                          save_each_plot = TRUE,
+                                          dimensionality_reduction = "UMAP",
+                                          dynamic_cell_size = FALSE)
     expect_false(is.null(ind_snv_plots$plots_json))
     expect_false(is.null(ind_snv_plots$snv_options))
 })
