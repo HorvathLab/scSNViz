@@ -86,7 +86,7 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
   #os checking
   sys <- Sys.info()[['sysname']]
   if (sys == "Linux" || sys == "Darwin"){
-    cores <- readline("How many cores would you like to use?")
+    cores <- readline("How many cores would you like to use?: ")
     cores <- as.numeric(cores)
     if (cores > detectCores()){
       stop(paste0("Invalid amount of cores, you have "), detectCores(), " cores.")
@@ -143,7 +143,11 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
 
   histograms <- list()
   if (include_histograms) {
+    if (sys == "Darwin"){
+      options(bitmapType = "quartz")
+    } else {
     options(bitmapType = "cairo-png")
+    }
     hist_list <- list(list(aes = aes(x = TotalVAF), xlab = "TotalVAF",
                            file_suffix = "Histogram_TotalVAF", binwidth = 0.05),
                       list(aes = aes(x = MeanVAF), xlab = "MeanSNVsVAF",
