@@ -14,6 +14,7 @@ sudo apt install libfontconfig1-dev libharfbuzz-dev libfribidi-dev libcurl4-open
 
 ```
 # Enter commands in R (or R studio)
+install.packages('usethis')
 install.packages('devtools')
 library(devtools)
 
@@ -21,16 +22,19 @@ install_github("navinlabcode/copykat")
 
 if (!require("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
-BiocManager::install("slingshot")
-BiocManager::install("SingleCellExperiment")
+
+BiocManager::install('glmGamPoi')
+BiocManager::install('SingleCellExperiment')
+BiocManager::install('slingshot')
 
 install_github('HorvathLab/scSNViz', ref = 'dev')
 library(scsnviz)
-BiocManager::install('glmGamPoi')
 ```
 If the above fails due to download timeout, try to increase the global options timeout. E.g. options(timeout=3600)
 
 If the above fails due to rate limits, try generating a GitHub Personal Access Token (PAT), add it into your environment and then run again.
+
+If the above gives errors related to randomcoloR, it may be due to the V8 package dependency. Please refer to the V8 README https://github.com/jeroen/V8.
 
 ## Load Libraries
 
@@ -262,6 +266,7 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
 ```
 ind_snv_plots <- individual_snv_plots(seurat_object = processed_data$SeuratObject,
                                       processed_snv = processed_data$ProcessedSNV,
+                                      sig_snvs = processed_data$SigSNV,
                                       output_dir = output_dir,
                                       slingshot = FALSE,
                                       save_each_plot = TRUE,
