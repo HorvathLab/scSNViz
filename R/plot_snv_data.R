@@ -50,10 +50,10 @@
 #'                        aggregated_snv = processed_data$AggregatedSNV,
 #'                        plot_data = processed_data$PlotData,
 #'                        output_dir = output_dir,
-#'                        include_histograms = TRUE,  
+#'                        include_histograms = TRUE,
 #'                        dimensionality_reduction = "umap",
 #'                        include_cell_types = TRUE,
-#'                        include_copykat = FALSE, 
+#'                        include_copykat = FALSE,
 #'                        include_snv_dim_red = FALSE,
 #'                        slingshot = TRUE,
 #'                        color_scale = "YlOrRd",
@@ -72,7 +72,7 @@
 plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_data, output_dir = NULL,
                           include_histograms = T, include_cell_types = F, include_snv_dim_red = T,
                           include_copykat = F, dimensionality_reduction = "UMAP", slingshot = T,
-                          color_scale = "YlOrRd", cell_border = 0, disable_3d_axis = F, save_each_plot = F, 
+                          color_scale = "YlOrRd", cell_border = 0, disable_3d_axis = F, save_each_plot = F,
                           enable_integrated = F) {
 
   cat("\nGenerating SNV data plots...\n")
@@ -156,9 +156,9 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
     for (hist_info in hist_list) {
     p <- ggplot(aggregated_snv, hist_info$aes)
 
-    if (enable_integrated) {    
+    if (enable_integrated) {
       n_colors <- length(unique(seurat_object$orig.ident))
-      palette <- distinctColorPalette(n_colors)  
+      palette <- distinctColorPalette(n_colors)
 
       for (i in seq_along(unique(seurat_object$orig.ident))) {
         p <- p + geom_histogram(
@@ -169,7 +169,7 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
       }
 
       p <- p +
-        scale_fill_manual(values = palette, name = "Sample") +  
+        scale_fill_manual(values = palette, name = "Sample") +
         xlab(hist_info$xlab) + ylab("Cells") +
         theme_minimal()
 
@@ -187,9 +187,9 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
     }
 
     if (save_each_plot && !is.null(output_dir)) {
-      ggsave(p, file = file.path(output_dir, "SNV_data_plots",
-                                paste0(hist_info$file_suffix, ".png")),
-            device = "png")
+      pth = file.path(output_dir, "SNV_data_plots",
+                         paste0(hist_info$file_suffix, ".png"))
+      ggsave(p, filename = pth, device = "png")
     }
   }
     options(bitmapType = "C_X11")
@@ -211,7 +211,7 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
 
   generate_plot <- function(metric, plot_data, dim_plotting, color_scale, reversescale_option,
                             cell_border, color_undetected, curves, disable_3d_axis, title) {
-    plot <- plot_ly(type = "scatter3d", mode = "lines+markers") 
+    plot <- plot_ly(type = "scatter3d", mode = "lines+markers")
     max_metric_val = max(plot_data[plot_data[["Undetected"]] == 0,metric])
     for (i in 1:length(unique(seurat_object$orig.ident))){
       this.id = unique(seurat_object$orig.ident)[i]
@@ -349,9 +349,9 @@ plots <- c(plots, new_plots)
       scene = list(xaxis = list(title = paste0(toupper(dimensionality_reduction), "_1")),
       yaxis = list(title = paste0(toupper(dimensionality_reduction), "_2")),
       zaxis = list(title = paste0(toupper(dimensionality_reduction), "_3"))))}
-    
+
     plots[["Sample ID"]] <- origident_plot
-    
+
     if (save_each_plot && !is.null(output_dir)) {
       saveWidget(as_widget(origident_plot), file = file.path(
         output_dir, "SNV_data_plots", "SAMPLE_ID_plot.html"),
@@ -475,15 +475,15 @@ plots <- c(plots, new_plots)
     if (length(unique_snvs) == 0 || length(unique_readgroups) == 0) {
       stop("processed_snv contains no valid SNVs or ReadGroups.")
     }
-    
+
     processed_snv_flt = processed_snv[is.numeric(processed_snv$VAF)==1 & is.finite(processed_snv$VAF)==TRUE,]
     cell_ids = data.frame(ReadGroup = unique(processed_snv_flt$ReadGroup),cell_n=(1:length(unique(processed_snv_flt$ReadGroup))))
     snv_ids = data.frame(SNV = unique(processed_snv_flt$SNV),snv_val=(1:length(unique(processed_snv_flt$SNV))))
     df_transpose = merge(processed_snv_flt,cell_ids, on='ReadGroup',how='left')
     df_transpose = merge(df_transpose,snv_ids, on='ReadGroup',how='left')
-    
+
     mtx = Matrix(0, nrow=length(unique(df_transpose$ReadGroup)), ncol=length(unique(df_transpose$SNV)))
-    
+
     mtx[cbind(df_transpose$cell_n,df_transpose$snv_val)] <- df_transpose$VAF
     colnames(mtx) <- snv_ids$SNV
     rownames(mtx) <- cell_ids$ReadGroup
@@ -491,7 +491,7 @@ plots <- c(plots, new_plots)
     srt_transposed <- NormalizeData(srt_transposed, verbose=F)
     srt_transposed <- FindVariableFeatures(srt_transposed, verbose=F)
     srt_transposed <- ScaleData(srt_transposed, verbose=F)
-    
+
     if (dimensionality_reduction == "tsne") {
       srt_transposed = RunTSNE(srt_transposed, dim.embed = 3, verbose=F)
       snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = dimensionality_reduction))
@@ -505,7 +505,7 @@ plots <- c(plots, new_plots)
       srt_transposed = RunUMAP(srt_transposed, n.components = 3, dims=1:20, verbose=F)
       snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = dimensionality_reduction))
     }
-    
+
     df_3dplot_snv <- as.data.frame(snv_mat_reduced)
     colnames(df_3dplot_snv) <- c(
       paste0(toupper(dimensionality_reduction), "_1"),
