@@ -479,36 +479,40 @@ plots <- c(plots, new_plots)
     if (length(unique_snvs) == 0 || length(unique_readgroups) == 0) {
       stop("processed_snv contains no valid SNVs or ReadGroups.")
     }
-
+    
     processed_snv_flt = processed_snv[is.numeric(processed_snv$VAF)==1 & is.finite(processed_snv$VAF)==TRUE,]
     cell_ids = data.frame(ReadGroup = unique(processed_snv_flt$ReadGroup),cell_n=(1:length(unique(processed_snv_flt$ReadGroup))))
-    snv_ids = data.frame(SNV = unique(processed_snv_flt$SNV),snv_val=(1:length(unique(processed_snv_flt$SNV))))
-    df_transpose = merge(processed_snv_flt,cell_ids, on='ReadGroup',how='left')
-    df_transpose = merge(df_transpose,snv_ids, on='ReadGroup',how='left')
-
+    snv_ids = data.frame(SNV = unique(processed_snv_flt$SNV), snv_val=(1:length(unique(processed_snv_flt$SNV))))
+    df_transpose = merge(processed_snv_flt, cell_ids, on='ReadGroup',how='left')
+    df_transpose = merge(df_transpose, snv_ids, on='ReadGroup',how='left')
+    
     mtx = Matrix(0, nrow=length(unique(df_transpose$ReadGroup)), ncol=length(unique(df_transpose$SNV)))
+    mtx[cbind(df_transpose$cell_n,df_transpose$snv_val)] <- df_transpose$SNVCount
 
-    mtx[cbind(df_transpose$cell_n,df_transpose$snv_val)] <- df_transpose$VAF
-    colnames(mtx) <- snv_ids$SNV
+    colnames(mtx) <- 1:length(snv_ids$SNV)
     rownames(mtx) <- cell_ids$ReadGroup
-    srt_transposed <- CreateSeuratObject(mtx,min.features=1)
+
+    df_transpose_dedup = df_transpose[!duplicated(df_transpose$SNV),]
+    rownames(df_transpose_dedup) = df_transpose_dedup$SNV
+
+    srt_transposed <- CreateSeuratObject(mtx, min.features=1)
+    srt_transposed <- subset(srt_transposed, subset = nCount_RNA > 1)
     srt_transposed <- NormalizeData(srt_transposed, verbose=F)
-    srt_transposed <- FindVariableFeatures(srt_transposed, verbose=F)
+    srt_transposed <- FindVariableFeatures(srt_transposed, selection.method = "vst", verbose=F)
+    all.genes <- rownames(srt_transposed)
     srt_transposed <- ScaleData(srt_transposed, verbose=F)
 
-    if (dimensionality_reduction == "tsne") {
-      srt_transposed = RunTSNE(srt_transposed, dim.embed = 3, verbose=F)
-      snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = dimensionality_reduction))
-    } else if (dimensionality_reduction == "pca") {
-      srt_transposed = RunPCA(srt_transposed, dim.embed = 3, verbose=F)
-      snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = dimensionality_reduction))
-    } else {
-      srt_transposed = RunPCA(srt_transposed, verbose=F)
-      srt_transposed <- FindNeighbors(srt_transposed, verbose=F)
-      srt_transposed <- FindClusters(srt_transposed, verbose=F)
-      srt_transposed = RunUMAP(srt_transposed, n.components = 3, dims=1:20, verbose=F)
-      snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = dimensionality_reduction))
-    }
+    srt_transposed$snv_val = unlist(lapply(rownames(srt_transposed@meta.data),strtoi))
+    metadata = srt_transposed@meta.data
+    metadata = merge(metadata, df_transpose_dedup[c('snv_val','SNV')], on='snv_val', how='left')
+    metadata = metadata[order(metadata$snv_val,decreasing=F),]
+    
+    srt_transposed = RunPCA(srt_transposed)
+    srt_transposed <- FindNeighbors(srt_transposed, dim=1:10, verbose=F)
+    srt_transposed <- FindClusters(srt_transposed, verbose=F)
+    srt_transposed = RunUMAP(srt_transposed, n.components = 3, dims=1:10, verbose=F)
+    snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = dimensionality_reduction))
+    rownames(snv_mat_reduced) = srt_transposed$SNV
 
     df_3dplot_snv <- as.data.frame(snv_mat_reduced)
     colnames(df_3dplot_snv) <- c(
