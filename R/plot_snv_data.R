@@ -501,6 +501,11 @@ plots <- c(plots, new_plots)
     srt_transposed <- FindVariableFeatures(srt_transposed, selection.method = "vst", verbose=F)
     all.genes <- rownames(srt_transposed)
     srt_transposed <- ScaleData(srt_transposed, verbose=F)
+    
+    metadata = srt_transposed@meta.data 
+    metadata = merge(metadata, df_transpose_dedup[c('snv_val','SNV')], on='snv_val', how='left')
+    metadata = metadata[order(metadata$snv_val,decreasing=F),]
+
 
     srt_transposed$snv_val = unlist(lapply(rownames(srt_transposed@meta.data),strtoi))
     metadata = srt_transposed@meta.data
@@ -512,7 +517,7 @@ plots <- c(plots, new_plots)
     srt_transposed <- FindClusters(srt_transposed, verbose=F)
     srt_transposed = RunUMAP(srt_transposed, n.components = 3, dims=1:10, verbose=F)
     snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = dimensionality_reduction))
-    rownames(snv_mat_reduced) = srt_transposed$SNV
+    rownames(snv_mat_reduced) = metadata$SNV
 
     df_3dplot_snv <- as.data.frame(snv_mat_reduced)
     colnames(df_3dplot_snv) <- c(
