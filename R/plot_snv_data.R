@@ -516,14 +516,14 @@ plots <- c(plots, new_plots)
     srt_transposed <- FindNeighbors(srt_transposed, dim=1:10, verbose=F)
     srt_transposed <- FindClusters(srt_transposed, verbose=F)
     srt_transposed = RunUMAP(srt_transposed, n.components = 3, dims=1:10, verbose=F)
-    snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = dimensionality_reduction))
+    snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = 'umap'))
     rownames(snv_mat_reduced) = metadata$SNV
 
     df_3dplot_snv <- as.data.frame(snv_mat_reduced)
     colnames(df_3dplot_snv) <- c(
-      paste0(toupper(dimensionality_reduction), "_1"),
-      paste0(toupper(dimensionality_reduction), "_2"),
-      paste0(toupper(dimensionality_reduction), "_3")
+      paste0(toupper('umap'), "_1"),
+      paste0(toupper('umap'), "_2"),
+      paste0(toupper('umap'), "_3")
     )
 
     trans_snv_plot <- plot_ly(
