@@ -8,7 +8,7 @@
 #' @importFrom dplyr %>% filter group_by
 #' @importFrom plotly ggplotly add_markers plot_ly add_trace layout as_widget
 #' @importFrom htmlwidgets saveWidget
-#' @importFrom Matrix sparseMatrix
+#' @importFrom Matrix Matrix
 #' @importFrom umap umap
 #' @importFrom Rtsne Rtsne
 #' @importFrom randomcoloR distinctColorPalette
