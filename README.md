@@ -41,7 +41,7 @@ If the above gives errors related to randomcoloR, it may be due to the V8 packag
 #### Load required libraries
 
 ```
-packages <- c('copykat', 'ggplot2', 'HGNChelper', 'parallel', 'readr', 'Seurat', 'SingleCellExperiment', 'slingshot')
+packages <- c('copykat', 'HGNChelper', 'parallel', 'Seurat', 'SingleCellExperiment', 'slingshot')
 lapply(packages, library, character.only=TRUE)
 ```
 

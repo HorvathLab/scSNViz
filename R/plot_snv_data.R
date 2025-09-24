@@ -4,7 +4,7 @@
 #'
 #' @importFrom Seurat Embeddings as.SingleCellExperiment GetAssayData
 #' @importFrom copykat copykat CNA.MCMC annotateGenes.hg20 annotateGenes.mm10 baseline.GMM baseline.norm.cl convert.all.bins.hg20 heatmap.3
-#' @importFrom ggplot2 ggplot ggsave aes geom_histogram xlab ylab theme element_text element_blank
+#' @importFrom ggplot2 ggplot ggsave aes geom_histogram xlab ylab theme element_text element_blank theme_minimal after_stat
 #' @importFrom dplyr %>% filter group_by
 #' @importFrom plotly ggplotly add_markers plot_ly add_trace layout as_widget
 #' @importFrom htmlwidgets saveWidget
@@ -512,7 +512,7 @@ plots <- c(plots, new_plots)
     metadata = merge(metadata, df_transpose_dedup[c('snv_val','SNV')], on='snv_val', how='left')
     metadata = metadata[order(metadata$snv_val,decreasing=F),]
     
-    srt_transposed = RunPCA(srt_transposed)
+    srt_transposed = RunPCA(srt_transposed, verbose=F)
     srt_transposed <- FindNeighbors(srt_transposed, dim=1:10, verbose=F)
     srt_transposed <- FindClusters(srt_transposed, verbose=F)
     srt_transposed = RunUMAP(srt_transposed, n.components = 3, dims=1:10, verbose=F)
