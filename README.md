@@ -27,7 +27,7 @@ BiocManager::install('glmGamPoi')
 BiocManager::install('SingleCellExperiment')
 BiocManager::install('slingshot')
 
-install_github('HorvathLab/scSNViz', ref = 'dev')
+install_github('HorvathLab/scSNViz')
 library(scsnviz)
 ```
 If the above fails due to download timeout, try to increase the global options timeout. E.g. options(timeout=3600)
