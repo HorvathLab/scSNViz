@@ -192,7 +192,7 @@ processed_data <- preprocess_snv_data(rds_obj = sample1,
                                       output_dir = output_dir)
 
 snvs_of_interest = c('1_100213925_C>G','1_151982919_G>C')
-processed_data$ProcessedSnv['SNV'] <- paste0(processed_snv$CHROM, "_", processed_snv$POS, "_",
+processed_data$ProcessedSNV['SNV'] <- paste0(processed_snv$CHROM, "_", processed_snv$POS, "_",
                                 processed_snv$REF, ">", processed_snv$ALT)
 processed_data = filter(processed_data, SNV %in% snvs_of_interest)
 
