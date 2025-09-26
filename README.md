@@ -119,6 +119,7 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
                        include_copykat = FALSE, # CNV metrics produced by copykat; this may significantly increase processing time depending on the size of gene counts matrix provided
                        include_snv_dim_red = FALSE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs.
                        slingshot = TRUE,
+                       snv_label = FALSE,
                        color_scale = "YlOrRd",
                        cell_border = 0,
                        save_each_plot = TRUE)
@@ -175,9 +176,41 @@ generate_report(plot_object = plots,
                 hide_ind_plots = FALSE,
                 output_dir = output_dir)
 ```
+#### Generate Transposed SNV plots (with or without labels)
+
+snv_file <- 'input/sample1_SNVs_large.tsv' # minimum of 100 SNVs in order to generate a transposed SNV plot
+
+processed_data <- preprocess_snv_data(rds_obj = sample1,
+                                      snv_file = snv_file,
+                                      dimensionality_reduction = "UMAP",
+                                      th_vars = 0,
+                                      th_reads = 0,
+                                      enable_sctype = TRUE, #to classify cell types using sctype
+                                      tissue_type = "Immunesystem", # other tissue options include: Pancreas, Liver, Eye, Kidney, Brain, Lung, Adrenal, Heart, Intestine, Muscle, Placenta, Spleen, Stomach, Thymus
+                                      generate_statistics = TRUE,
+                                      output_dir = output_dir)
+
+snvs_of_interest = c('1_100213925_C>G','1_151982919_G>C')
+processed_data$ProcessedSnv['SNV'] <- paste0(processed_snv$CHROM, "_", processed_snv$POS, "_",
+                                processed_snv$REF, ">", processed_snv$ALT)
+processed_data = filter(processed_data, SNV %in% snvs_of_interest)
 
 
-
+plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
+                       processed_data$ProcessedSNV,
+                       processed_data$AggregatedSNV,
+                       processed_data$PlotData,
+                       output_dir = output_dir,
+                       include_histograms = TRUE,
+                       dimensionality_reduction = "umap",
+                       include_cell_types = TRUE,
+                       include_copykat = FALSE, # CNV metrics produced by copykat; this may significantly increase processing time depending on the size of gene counts matrix provided
+                       include_snv_dim_red = FALSE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs.
+                       slingshot = TRUE,
+                       snv_label = TRUE, # generates labels for transposed SNV plot
+                       color_scale = "YlOrRd",
+                       cell_border = 0,
+                       save_each_plot = TRUE)
 
 
 ## Workflow for Multiple Samples
