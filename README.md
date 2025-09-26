@@ -178,6 +178,7 @@ generate_report(plot_object = plots,
 ```
 #### Generate Transposed SNV plots (with or without labels)
 
+```
 snv_file <- 'input/sample1_SNVs_large.tsv' # minimum of 100 SNVs in order to generate a transposed SNV plot
 
 processed_data <- preprocess_snv_data(rds_obj = sample1,
@@ -211,7 +212,7 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
                        color_scale = "YlOrRd",
                        cell_border = 0,
                        save_each_plot = TRUE)
-
+```
 
 ## Workflow for Multiple Samples
 The following is a workflow that calculates and overlays basic SNV metrics on top of a dimensionality reduction integrated from multiple samples.
