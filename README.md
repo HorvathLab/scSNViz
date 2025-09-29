@@ -206,6 +206,7 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
 
 <img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/transposed_snv_plot.png'>
 
+
 ## Workflow for Multiple Samples
 The following is a workflow that calculates and overlays basic SNV metrics on top of a dimensionality reduction integrated from multiple samples.
 
