@@ -16,6 +16,7 @@ sudo apt install libfontconfig1-dev libharfbuzz-dev libfribidi-dev libcurl4-open
 # Enter commands in R (or R studio)
 install.packages('usethis')
 install.packages('devtools')
+install.packages('tidyverse')
 library(devtools)
 
 install_github("navinlabcode/copykat")
@@ -41,7 +42,7 @@ If the above gives errors related to randomcoloR, it may be due to the V8 packag
 #### Load required libraries
 
 ```
-packages <- c('copykat', 'HGNChelper', 'parallel', 'Seurat', 'SingleCellExperiment', 'slingshot')
+packages <- c('copykat', 'HGNChelper', 'parallel', 'Seurat', 'SingleCellExperiment', 'slingshot', 'tidyverse')
 lapply(packages, library, character.only=TRUE)
 ```
 
@@ -114,12 +115,11 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
                        processed_data$PlotData,
                        output_dir = output_dir,
                        include_histograms = TRUE,  
-                       dimensionality_reduction = "umap",
+                       dimensionality_reduction = "UMAP",
                        include_cell_types = TRUE,
                        include_copykat = FALSE, # CNV metrics produced by copykat; this may significantly increase processing time depending on the size of gene counts matrix provided
                        include_snv_dim_red = FALSE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs.
                        slingshot = TRUE,
-                       snv_label = FALSE,
                        color_scale = "YlOrRd",
                        cell_border = 0,
                        save_each_plot = TRUE)
@@ -176,7 +176,7 @@ generate_report(plot_object = plots,
                 hide_ind_plots = FALSE,
                 output_dir = output_dir)
 ```
-#### Generate Transposed SNV plots (with or without labels)
+#### Generate Transposed SNV plot (with or without labels)
 
 In order to generate a transposed SNV plot, you must have a minimum of 100 unique SNVs in your SNV file. To run the tutorial with sample data, please re-run the above workflow for an individual sample, but using the 'input/sample1_SNVs_large.tsv' file. Once you have generated the processed_data variable, proceed as follows.
 
@@ -203,6 +203,8 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
                        cell_border = 0,
                        save_each_plot = TRUE)
 ```
+
+<img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/transposed_snv_plot.png'>
 
 ## Workflow for Multiple Samples
 The following is a workflow that calculates and overlays basic SNV metrics on top of a dimensionality reduction integrated from multiple samples.
