@@ -182,8 +182,9 @@ In order to generate a transposed SNV plot, you must have a minimum of 100 uniqu
 
 ```
 snvs_of_interest = c('1:100213925:C:G','1:151982919:G:C')
-processed_data$ProcessedSNV['SNV'] <- paste0(processed_snv$CHROM, ':', processed_snv$POS, ':',
-                                processed_snv$REF, ':', processed_snv$ALT)
+processed_data$ProcessedSNV['SNV'] <- paste0(processed_data$ProcessedSNV$CHROM, ':', processed_data$ProcessedSNV$POS, ':',
+                                processed_data$ProcessedSNV$REF, ':', processed_data$ProcessedSNV$ALT)
+processed_data$ProcessedSNV['snv_label']<-'not_of_interest'
 processed_data$ProcessedSNV[rownames(filter(processed_data$ProcessedSNV, SNV %in% snvs_of_interest)),'snv_label'] = 'snv_of_interest'
 
 plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
@@ -195,9 +196,9 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
                        dimensionality_reduction = "umap",
                        include_cell_types = TRUE,
                        include_copykat = FALSE, # CNV metrics produced by copykat; this may significantly increase processing time depending on the size of gene counts matrix provided
-                       include_snv_dim_red = FALSE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs.
+                       include_snv_dim_red = TRUE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs.
                        slingshot = TRUE,
-                       snv_label = TRUE, # generates labels for transposed SNV plot
+                       snv_label = TRUE, # labels for transposed SNV plot
                        color_scale = "YlOrRd",
                        cell_border = 0,
                        save_each_plot = TRUE)
