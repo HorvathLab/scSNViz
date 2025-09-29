@@ -1,13 +1,14 @@
-pckages <- c('dplyr', 'ggplot', 'htmlwidgets', 'Matrix', 'parallel', 'plotly', 'Rtsne', 'randomcoloR', 'saveWidget', 'Seurat', 'slingshot')
+pckages <- c('dplyr', 'ggplot2', 'htmlwidgets', 'Matrix', 'parallel', 'plotly', 'Rtsne', 'randomcoloR', 'Seurat', 'slingshot')
 sapply(pckages, require, character=TRUE)
 
 test_that(desc = 'plot_snv_data test', code = {
-    snv_file <- '../../input/sample1_SNVs.tsv'
-    srt_obj_file <- '../../input/sample1_Seurat_object.rds'
-    output_dir = "output_singlesnvplot"
+    here::i_am('sample1_Seurat_object.rds')
+    snv_file <- here::here('sample1_SNVs.tsv')
+    srt_obj_file <- here::here('sample1_Seurat_object.rds')
+    output_dir = 'output_singlesnvplot'
 
-    snv_file <- '../../input/sample1_SNVs.tsv'
-    srt_obj_file <- '../../input/sample1_Seurat_object.rds'
+    snv_file <- here::here('sample1_SNVs.tsv')
+    srt_obj_file <- here::here('sample1_Seurat_object.rds')
 
     sample1 <- readRDS(srt_obj_file)
     sample1@project.name = 'Sample1'

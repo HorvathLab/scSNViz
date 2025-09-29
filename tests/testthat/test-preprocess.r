@@ -1,13 +1,12 @@
-library(Seurat)
+pckages <- c('HGNChelper', 'Seurat')
+sapply(pckages, require, character=TRUE)
 test_that(desc = 'preprocess_snv_data test', code = {
-    snv_file <- '../../input/sample1_SNVs.tsv'
-    srt_obj_file <- '../../input/sample1_Seurat_object.rds'
-    output_dir = "output_preprocess"
+    here::i_am('sample1_Seurat_object.rds')
+    snv_file <- here::here('sample1_SNVs.tsv')
+    srt_obj_file <- here::here('sample1_Seurat_object.rds')
+    output_dir = 'output_preprocess'
 
     sample1 <- readRDS(srt_obj_file)
-    sample1@project.name = 'Sample1'
-    sample1$orig.ident = 'Sample1'
-    
     sample1[["percent.mt"]] <- PercentageFeatureSet(sample1, pattern = "^MT-")
     sample1 <- subset(sample1, subset = nFeature_RNA > 1000 & nFeature_RNA < 7500 & nCount_RNA < 50000 & percent.mt < 15) # Modify numbers appropriate to your violin plot
 
@@ -23,10 +22,10 @@ test_that(desc = 'preprocess_snv_data test', code = {
                                         th_vars = 0,
                                         th_reads = 0,
                                         enable_sctype = TRUE,
-                                        tissue_type = "Immunesystem", 
+                                        tissue_type = "Immunesystem",
                                         generate_statistics = TRUE,
                                         output_dir = output_dir)
-  
+
     expect_false(is.null(processed_data$ProcessedSNV))
     expect_false(is.null(processed_data$AggregatedSNV))
     expect_false(is.null(processed_data$PlotData))

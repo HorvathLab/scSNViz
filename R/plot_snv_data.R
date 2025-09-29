@@ -4,11 +4,11 @@
 #'
 #' @importFrom Seurat Embeddings as.SingleCellExperiment GetAssayData
 #' @importFrom copykat copykat CNA.MCMC annotateGenes.hg20 annotateGenes.mm10 baseline.GMM baseline.norm.cl convert.all.bins.hg20 heatmap.3
-#' @importFrom ggplot2 ggplot ggsave aes geom_histogram xlab ylab theme element_text element_blank
+#' @importFrom ggplot2 ggplot ggsave aes geom_histogram xlab ylab theme element_text element_blank theme_minimal after_stat
 #' @importFrom dplyr %>% filter group_by
 #' @importFrom plotly ggplotly add_markers plot_ly add_trace layout as_widget
 #' @importFrom htmlwidgets saveWidget
-#' @importFrom Matrix sparseMatrix
+#' @importFrom Matrix Matrix
 #' @importFrom umap umap
 #' @importFrom Rtsne Rtsne
 #' @importFrom randomcoloR distinctColorPalette
@@ -30,6 +30,7 @@
 #' @param cell_border Numeric; thickness of cells'/markers' border in the plot. Default: 0.
 #' @param disable_3d_axis Logical; whether to disable 3D axis labels. Default: FALSE.
 #' @param save_each_plot Logical; whether to save each plot individually. Default: FALSE.
+#' @param snv_label Logical; to label SNVs in transposed SNV plot using user-uploaded metadata. Default: FALSE.
 #' @param enable_integrated Logical; whether to use an integrated Seurat object. Default: FALSE.
 #' @return A list of generated plots.
 #' @details
@@ -50,14 +51,15 @@
 #'                        aggregated_snv = processed_data$AggregatedSNV,
 #'                        plot_data = processed_data$PlotData,
 #'                        output_dir = output_dir,
-#'                        include_histograms = TRUE,  
+#'                        include_histograms = TRUE,
 #'                        dimensionality_reduction = "umap",
 #'                        include_cell_types = TRUE,
-#'                        include_copykat = FALSE, 
+#'                        include_copykat = FALSE,
 #'                        include_snv_dim_red = FALSE,
 #'                        slingshot = TRUE,
 #'                        color_scale = "YlOrRd",
 #'                        cell_border = 0,
+#'                        snv_label = FALSE,
 #'                        save_each_plot = TRUE)
 #' }
 #'
@@ -72,8 +74,8 @@
 plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_data, output_dir = NULL,
                           include_histograms = T, include_cell_types = F, include_snv_dim_red = T,
                           include_copykat = F, dimensionality_reduction = "UMAP", slingshot = T,
-                          color_scale = "YlOrRd", cell_border = 0, disable_3d_axis = F, save_each_plot = F, 
-                          enable_integrated = F) {
+                          color_scale = "YlOrRd", cell_border = 0, disable_3d_axis = F, save_each_plot = F,
+                          enable_integrated = F, snv_label = F) {
 
   cat("\nGenerating SNV data plots...\n")
 
@@ -86,7 +88,7 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
   #os checking
   sys <- Sys.info()[['sysname']]
   if (sys == "Linux" || sys == "Darwin"){
-    cores <- readline("How many cores would you like to use?")
+    cores <- readline("How many cores would you like to use?: ")
     cores <- as.numeric(cores)
     if (cores > detectCores()){
       stop(paste0("Invalid amount of cores, you have "), detectCores(), " cores.")
@@ -143,7 +145,11 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
 
   histograms <- list()
   if (include_histograms) {
+    if (sys == "Darwin"){
+      options(bitmapType = "quartz")
+    } else {
     options(bitmapType = "cairo-png")
+    }
     hist_list <- list(list(aes = aes(x = TotalVAF), xlab = "TotalVAF",
                            file_suffix = "Histogram_TotalVAF", binwidth = 0.05),
                       list(aes = aes(x = MeanVAF), xlab = "MeanSNVsVAF",
@@ -156,9 +162,9 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
     for (hist_info in hist_list) {
     p <- ggplot(aggregated_snv, hist_info$aes)
 
-    if (enable_integrated) {    
+    if (enable_integrated) {
       n_colors <- length(unique(seurat_object$orig.ident))
-      palette <- distinctColorPalette(n_colors)  
+      palette <- distinctColorPalette(n_colors)
 
       for (i in seq_along(unique(seurat_object$orig.ident))) {
         p <- p + geom_histogram(
@@ -169,7 +175,7 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
       }
 
       p <- p +
-        scale_fill_manual(values = palette, name = "Sample") +  
+        scale_fill_manual(values = palette, name = "Sample") +
         xlab(hist_info$xlab) + ylab("Cells") +
         theme_minimal()
 
@@ -187,9 +193,9 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
     }
 
     if (save_each_plot && !is.null(output_dir)) {
-      ggsave(p, file = file.path(output_dir, "SNV_data_plots",
-                                paste0(hist_info$file_suffix, ".png")),
-            device = "png")
+      pth = file.path(output_dir, "SNV_data_plots",
+                         paste0(hist_info$file_suffix, ".png"))
+      ggsave(p, filename = pth, device = "png")
     }
   }
     options(bitmapType = "C_X11")
@@ -211,7 +217,7 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
 
   generate_plot <- function(metric, plot_data, dim_plotting, color_scale, reversescale_option,
                             cell_border, color_undetected, curves, disable_3d_axis, title) {
-    plot <- plot_ly(type = "scatter3d", mode = "lines+markers") 
+    plot <- plot_ly(type = "scatter3d", mode = "lines+markers")
     max_metric_val = max(plot_data[plot_data[["Undetected"]] == 0,metric])
     for (i in 1:length(unique(seurat_object$orig.ident))){
       this.id = unique(seurat_object$orig.ident)[i]
@@ -349,9 +355,9 @@ plots <- c(plots, new_plots)
       scene = list(xaxis = list(title = paste0(toupper(dimensionality_reduction), "_1")),
       yaxis = list(title = paste0(toupper(dimensionality_reduction), "_2")),
       zaxis = list(title = paste0(toupper(dimensionality_reduction), "_3"))))}
-    
+
     plots[["Sample ID"]] <- origident_plot
-    
+
     if (save_each_plot && !is.null(output_dir)) {
       saveWidget(as_widget(origident_plot), file = file.path(
         output_dir, "SNV_data_plots", "SAMPLE_ID_plot.html"),
@@ -471,59 +477,76 @@ plots <- c(plots, new_plots)
                                 processed_snv$REF, ">", processed_snv$ALT)
     unique_snvs <- unique(processed_snv$SNV)
     unique_readgroups <- unique(processed_snv$ReadGroup)
-
     if (length(unique_snvs) == 0 || length(unique_readgroups) == 0) {
       stop("processed_snv contains no valid SNVs or ReadGroups.")
     }
-    
     processed_snv_flt = processed_snv[is.numeric(processed_snv$VAF)==1 & is.finite(processed_snv$VAF)==TRUE,]
+    dd = processed_snv_flt[!duplicated(processed_snv_flt$SNV),]
     cell_ids = data.frame(ReadGroup = unique(processed_snv_flt$ReadGroup),cell_n=(1:length(unique(processed_snv_flt$ReadGroup))))
-    snv_ids = data.frame(SNV = unique(processed_snv_flt$SNV),snv_val=(1:length(unique(processed_snv_flt$SNV))))
-    df_transpose = merge(processed_snv_flt,cell_ids, on='ReadGroup',how='left')
-    df_transpose = merge(df_transpose,snv_ids, on='ReadGroup',how='left')
+    snv_ids = data.frame(SNV = unique(processed_snv_flt$SNV), snv_val=(1:length(unique(processed_snv_flt$SNV))))
+    if (snv_label){
+      snv_ids = merge(snv_ids, dd[c('SNV','snv_label')], by='SNV',all.x=TRUE)}
+    df_transpose = merge(processed_snv_flt, cell_ids, by='ReadGroup',all.x=TRUE)
+    df_transpose = merge(df_transpose, snv_ids, by='SNV',all.x=TRUE)
     
     mtx = Matrix(0, nrow=length(unique(df_transpose$ReadGroup)), ncol=length(unique(df_transpose$SNV)))
-    
-    mtx[cbind(df_transpose$cell_n,df_transpose$snv_val)] <- df_transpose$VAF
-    colnames(mtx) <- snv_ids$SNV
+    mtx[cbind(df_transpose$cell_n,df_transpose$snv_val)] <- df_transpose$SNVCount
+    colnames(mtx) <- 1:length(snv_ids$SNV)
     rownames(mtx) <- cell_ids$ReadGroup
-    srt_transposed <- CreateSeuratObject(mtx,min.features=1)
+
+    srt_transposed <- CreateSeuratObject(mtx, min.features=10)
+    srt_transposed <- subset(srt_transposed, nFeature_RNA>10) #, subset = nCount_RNA > 1)
     srt_transposed <- NormalizeData(srt_transposed, verbose=F)
-    srt_transposed <- FindVariableFeatures(srt_transposed, verbose=F)
+    srt_transposed <- FindVariableFeatures(srt_transposed, selection.method = "vst", verbose=F)
+    all.genes <- rownames(srt_transposed)
+
     srt_transposed <- ScaleData(srt_transposed, verbose=F)
+    srt_transposed = RunPCA(srt_transposed, verbose=F)
+    srt_transposed <- FindNeighbors(srt_transposed, dim=1:10, verbose=F)
+    srt_transposed <- FindClusters(srt_transposed, verbose=F)
+    srt_transposed = RunUMAP(srt_transposed, n.components = 3, dims=1:10, verbose=F)
     
-    if (dimensionality_reduction == "tsne") {
-      srt_transposed = RunTSNE(srt_transposed, dim.embed = 3, verbose=F)
-      snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = dimensionality_reduction))
-    } else if (dimensionality_reduction == "pca") {
-      srt_transposed = RunPCA(srt_transposed, dim.embed = 3, verbose=F)
-      snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = dimensionality_reduction))
-    } else {
-      srt_transposed = RunPCA(srt_transposed, verbose=F)
-      srt_transposed <- FindNeighbors(srt_transposed, verbose=F)
-      srt_transposed <- FindClusters(srt_transposed, verbose=F)
-      srt_transposed = RunUMAP(srt_transposed, n.components = 3, dims=1:20, verbose=F)
-      snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = dimensionality_reduction))
-    }
-    
+    if (snv_label){srt_transposed@meta.data$snv_label = snv_ids[colnames(srt_transposed),]$snv_label}
+    colnames(srt_transposed) = snv_ids[colnames(srt_transposed),]$SNV
+    snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = dimensionality_reduction))
+    if (snv_label){snv_mat_reduced['snv_label'] = srt_transposed$snv_label}
+
     df_3dplot_snv <- as.data.frame(snv_mat_reduced)
-    colnames(df_3dplot_snv) <- c(
-      paste0(toupper(dimensionality_reduction), "_1"),
-      paste0(toupper(dimensionality_reduction), "_2"),
-      paste0(toupper(dimensionality_reduction), "_3")
-    )
-
-    trans_snv_plot <- plot_ly(
-      type = "scatter3d", mode = "lines+markers"
-    ) %>% add_markers(
-      data = df_3dplot_snv,
-      x = ~get(colnames(df_3dplot_snv)[1]),
-      y = ~get(colnames(df_3dplot_snv)[2]),
-      z = ~get(colnames(df_3dplot_snv)[3]),
-      marker = list(size = cell_border, color = color_scale, opacity = 0.5),
-      text = rownames(df_3dplot_snv), hoverinfo = "text"
-    )
-
+    if (snv_label){
+      colnames(df_3dplot_snv) <- c(
+        paste0(toupper(dimensionality_reduction), "_1"),
+        paste0(toupper(dimensionality_reduction), "_2"),
+        paste0(toupper(dimensionality_reduction), "_3"),
+        'snv_label'
+      )
+    } else {
+      colnames(df_3dplot_snv) <- c(
+        paste0(toupper(dimensionality_reduction), "_1"),
+        paste0(toupper(dimensionality_reduction), "_2"),
+        paste0(toupper(dimensionality_reduction), "_3")
+      )
+    }
+    if (snv_label){
+      trans_snv_plot <- plot_ly(
+        type = "scatter3d", mode = "lines+markers"
+      ) %>% add_markers(
+        data = df_3dplot_snv,
+        x = ~get(colnames(df_3dplot_snv)[1]),
+        y = ~get(colnames(df_3dplot_snv)[2]),
+        z = ~get(colnames(df_3dplot_snv)[3]),
+        color=~snv_label, marker = list(size = cell_border, colorscale = color_scale, opacity = 0.5),
+        text = rownames(df_3dplot_snv), hoverinfo = "text")
+      } else {
+      trans_snv_plot <- plot_ly(
+        type = "scatter3d", mode = "lines+markers"
+      ) %>% add_markers(
+        data = df_3dplot_snv,
+        x = ~get(colnames(df_3dplot_snv)[1]),
+        y = ~get(colnames(df_3dplot_snv)[2]),
+        z = ~get(colnames(df_3dplot_snv)[3]),
+        marker = list(size = cell_border, colorscale = color_scale, opacity = 0.5),
+        text = rownames(df_3dplot_snv), hoverinfo = "text")
+    }
 
     if (disable_3d_axis) {
       trans_snv_plot <- trans_snv_plot %>% layout(
@@ -537,7 +560,7 @@ plots <- c(plots, new_plots)
     } else {
       trans_snv_plot <- trans_snv_plot %>% layout(
         title = '',
-        showlegend = FALSE,
+        showlegend = TRUE,
         scene = list(
           xaxis = list(title = colnames(df_3dplot_snv)[1]),
           yaxis = list(title = colnames(df_3dplot_snv)[2]),
