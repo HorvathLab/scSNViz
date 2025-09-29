@@ -204,7 +204,7 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
                        save_each_plot = TRUE)
 ```
 
-<img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/transposed_snv_plot.png'>
+<img src='https://github.com/HorvathLab/scSNViz/blob/ddd52c3f087a1a44989756f666427b987ae4e753/docs/transposed_snv_plot.png'>
 
 
 ## Workflow for Multiple Samples
