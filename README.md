@@ -185,7 +185,9 @@ snvs_of_interest = c('1:100213925:C:G','1:151982919:G:C')
 processed_data$ProcessedSNV['SNV'] <- paste0(processed_data$ProcessedSNV$CHROM, ':', processed_data$ProcessedSNV$POS, ':',
                                 processed_data$ProcessedSNV$REF, ':', processed_data$ProcessedSNV$ALT)
 processed_data$ProcessedSNV['snv_label']<-'not_of_interest'
-processed_data$ProcessedSNV[rownames(filter(processed_data$ProcessedSNV, SNV %in% snvs_of_interest)),'snv_label'] = 'snv_of_interest'
+df = processed_data$ProcessedSNV
+df[df$SNV %in% snvs_of_interest, 'snv_label] = 'snv_of_interest'
+processed_data$ProcessedSNV = df
 
 plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
                        processed_data$ProcessedSNV,
