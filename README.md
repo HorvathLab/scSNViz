@@ -16,7 +16,6 @@ sudo apt install libfontconfig1-dev libharfbuzz-dev libfribidi-dev libcurl4-open
 # Enter commands in R (or R studio)
 install.packages('usethis')
 install.packages('devtools')
-install.packages('tidyverse')
 library(devtools)
 
 install_github("navinlabcode/copykat")
@@ -40,7 +39,7 @@ If the above gives errors related to randomcoloR, it may be due to the V8 packag
 ## Load Libraries
 
 ```
-packages <- c('copykat', 'HGNChelper', 'parallel', 'Seurat', 'SingleCellExperiment', 'slingshot', 'tidyverse')
+packages <- c('copykat', 'HGNChelper', 'parallel', 'Seurat', 'SingleCellExperiment', 'slingshot')
 lapply(packages, library, character.only=TRUE)
 ```
 
