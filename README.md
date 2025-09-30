@@ -105,7 +105,7 @@ processed_data <- preprocess_snv_data(rds_obj=sample1,
 
 #### Generate 3d dimensionality reduction plots
 ```
-plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
+plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
                        processed_data$ProcessedSNV,
                        processed_data$AggregatedSNV,
                        processed_data$PlotData,
@@ -114,7 +114,7 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
                        dimensionality_reduction='UMAP',
                        include_cell_types=TRUE,
                        include_copykat=FALSE, # CNV metrics produced by copykat; this may significantly increase processing time depending on the size of gene counts matrix provided
-                       include_snv_dim_red = FALSE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs.
+                       include_snv_dim_red=FALSE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs.
                        slingshot=TRUE,
                        color_scale='YlOrRd',
                        cell_border=0,
@@ -158,7 +158,7 @@ one_snv_plot <- single_snv_plot(
 generate_report(plot_object=plots,
                 ind_snv_object=ind_snv_plots,
                 hide_ind_plots=TRUE, # Set this to FALSE in order to see plots for each individual SNV.
-                output_dir = output_dir)
+                output_dir=output_dir)
 ```
 
 
@@ -194,7 +194,7 @@ plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
                        dimensionality_reduction='UMAP',
                        include_cell_types=TRUE,
                        include_copykat=FALSE, # CNV metrics produced by copykat; this may significantly increase processing time depending on the size of gene counts matrix provided
-                       include_snv_dim_red = TRUE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs
+                       include_snv_dim_red=TRUE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs
                        snv_label=TRUE, # labels for transposed SNV plot
                        slingshot=TRUE,
                        color_scale='YlOrRd',
