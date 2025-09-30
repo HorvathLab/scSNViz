@@ -14,7 +14,6 @@ sudo apt install libfontconfig1-dev libharfbuzz-dev libfribidi-dev libcurl4-open
 
 ```
 # Enter commands in R (or R studio)
-install.packages('usethis')
 install.packages('devtools')
 library(devtools)
 
