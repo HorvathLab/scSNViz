@@ -20,7 +20,7 @@ library(devtools)
 install_github('navinlabcode/copykat')
 
 if (!require('BiocManager', quietly = TRUE))
-    install.packages("BiocManager")
+    install.packages('BiocManager')
 
 BiocManager::install('glmGamPoi')
 BiocManager::install('SingleCellExperiment')
