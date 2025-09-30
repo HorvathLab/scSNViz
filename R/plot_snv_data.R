@@ -30,7 +30,6 @@
 #' @param cell_border Numeric; thickness of cells'/markers' border in the plot. Default: 0.
 #' @param disable_3d_axis Logical; whether to disable 3D axis labels. Default: FALSE.
 #' @param save_each_plot Logical; whether to save each plot individually. Default: FALSE.
-#' @param snv_label Logical; to label SNVs in transposed SNV plot using user-uploaded metadata. Default: FALSE.
 #' @param enable_integrated Logical; whether to use an integrated Seurat object. Default: FALSE.
 #' @return A list of generated plots.
 #' @details
@@ -75,7 +74,7 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
                           include_histograms = T, include_cell_types = F, include_snv_dim_red = T,
                           include_copykat = F, dimensionality_reduction = "UMAP", slingshot = T,
                           color_scale = "YlOrRd", cell_border = 0, disable_3d_axis = F, save_each_plot = F,
-                          enable_integrated = F, snv_label = F) {
+                          enable_integrated = F) {
 
   cat("\nGenerating SNV data plots...\n")
 
