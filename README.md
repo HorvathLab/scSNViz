@@ -184,7 +184,7 @@ processed_data$ProcessedSNV['SNV'] <- paste0(processed_data$ProcessedSNV$CHROM, 
                                 processed_data$ProcessedSNV$REF, ':', processed_data$ProcessedSNV$ALT)
 processed_data$ProcessedSNV['snv_label']<-'not_of_interest'
 df = processed_data$ProcessedSNV
-df[df$SNV %in% snvs_of_interest, 'snv_label] = 'snv_of_interest'
+df[df$SNV %in% snvs_of_interest, 'snv_label'] = 'snv_of_interest'
 processed_data$ProcessedSNV = df
 
 plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
