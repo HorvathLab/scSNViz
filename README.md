@@ -50,13 +50,13 @@ The input files are located in the input folder on github. The snv file is an ou
 ```
 snv_file <- 'input/sample1_SNVs.tsv'
 srt_obj_file <- 'input/sample1_Seurat_object.rds'
-output_dir = "output"    # or output directory of your choice
+output_dir = 'output'    # or output directory of your choice
 ```
 
 #### Read in the counts matrix (from either an .RDS file of an existing Seurat object or a counts matrix)
 ```
-#gene.matrix <- Read10X(data.dir = countsmatrix_file) # for reading in a countsmatrix, the data.dir may also be the directory for that contains barcodes.tsv, genes.tsv and matrix.mtx, such as: /user/filtered_gene_bc_matrices/hg19/
-#sample1 <- CreateSeuratObject(counts = gene.matrix, min.cells = 3, min.features = 200, project = 'Sample1')
+#gene.matrix <- Read10X(data.dir=countsmatrix_file) # for reading in a countsmatrix, the data.dir may also be the directory for that contains barcodes.tsv, genes.tsv and matrix.mtx, such as: /user/filtered_gene_bc_matrices/hg19/
+#sample1 <- CreateSeuratObject(counts=gene.matrix, min.cells=3, min.features=200, project='Sample1')
 sample1 <- readRDS(srt_obj_file)
 sample1@project.name = 'Sample1' # set the project name
 sample1$orig.ident = 'Sample1' # set the project name
@@ -65,13 +65,13 @@ sample1$orig.ident = 'Sample1' # set the project name
 #### Quality Control: Filter data and perform scaling and normalization
 ```
 # define the percentage of counts per cell that originate from mitochondrial genes 
-sample1[["percent.mt"]] <- PercentageFeatureSet(sample1, pattern = "^MT-") # this is for Homo sapiens. If the organism is Mus musculus, then: pattern = '^mt-'
+sample1[['percent.mt']] <- PercentageFeatureSet(sample1, pattern='^MT-') # this is for Homo sapiens. If the organism is Mus musculus, then: pattern = '^mt-'
 
 # plot the number of features (or genes) per cell, the number of counts per cell and the percent.mt per cell
-VlnPlot(sample1, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol = 3) # As described in Seurat introductory Vignettes
+VlnPlot(sample1, features=c('nFeature_RNA', 'nCount_RNA', 'percent.mt'), ncol=3) # As described in Seurat introductory Vignettes
 
 # filter the Seurat object based on the violin plot
-sample1 <- subset(sample1, subset = nFeature_RNA > 1000 & nFeature_RNA < 7500 & nCount_RNA <50000 & percent.mt < 15) # Modify numbers appropriate to your violin plot
+sample1 <- subset(sample1, subset= nFeature_RNA>1000 & nFeature_RNA<7500 & nCount_RNA<50000 & percent.mt<15) # Modify numbers appropriate to your violin plot
 ```
 
 The below unfiltered and filtered violin plots show the quality control process, filtering cells out based on percent mitochondria, number of features and number of counts.
@@ -81,26 +81,26 @@ The below unfiltered and filtered violin plots show the quality control process,
 
 #### Scale and normalize the data. Then, run a PCA.
 ```
-sample1 <- SCTransform(object = sample1, vst.flavor = "v2", method = "glmGamPoi",
-           vars.to.regress = "percent.mt", verbose = F)
+sample1 <- SCTransform(object=sample1, vst.flavor='v2', method='glmGamPoi',
+           vars.to.regress='percent.mt', verbose = F)
 sample1 <- RunPCA(sample1)
-sample1 <- FindNeighbors(sample1, dims = 1:10)
-sample1 <- FindClusters(sample1, resolution = 0.5)
+sample1 <- FindNeighbors(sample1, dims=1:10)
+sample1 <- FindClusters(sample1, resolution=0.5)
 
 ```
 
 #### Preprocess the SNV data and incorporate the Seurat object into the workflow
 ```
 # preprocessing the SNV data
-processed_data <- preprocess_snv_data(rds_obj = sample1,
-                                      snv_file = snv_file,
-                                      dimensionality_reduction = "UMAP",
-                                      th_vars = 0,
-                                      th_reads = 0,
+processed_data <- preprocess_snv_data(rds_obj=sample1,
+                                      snv_file=snv_file,
+                                      dimensionality_reduction='UMAP',
+                                      th_vars=0,
+                                      th_reads=0,
                                       enable_sctype = TRUE, #to classify cell types using sctype
-                                      tissue_type = "Immunesystem", # other tissue options include: Pancreas, Liver, Eye, Kidney, Brain, Lung, Adrenal, Heart, Intestine, Muscle, Placenta, Spleen, Stomach, Thymus
-                                      generate_statistics = TRUE,
-                                      output_dir = output_dir)
+                                      tissue_type='Immunesystem', # other tissue options include: Pancreas, Liver, Eye, Kidney, Brain, Lung, Adrenal, Heart, Intestine, Muscle, Placenta, Spleen, Stomach, Thymus
+                                      generate_statistics=TRUE,
+                                      output_dir=output_dir)
 ```
 
 #### Generate 3d dimensionality reduction plots
@@ -109,16 +109,16 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
                        processed_data$ProcessedSNV,
                        processed_data$AggregatedSNV,
                        processed_data$PlotData,
-                       output_dir = output_dir,
-                       include_histograms = TRUE,  
-                       dimensionality_reduction = "UMAP",
-                       include_cell_types = TRUE,
-                       include_copykat = FALSE, # CNV metrics produced by copykat; this may significantly increase processing time depending on the size of gene counts matrix provided
+                       output_dir=output_dir,
+                       include_histograms=TRUE,  
+                       dimensionality_reduction='UMAP',
+                       include_cell_types=TRUE,
+                       include_copykat=FALSE, # CNV metrics produced by copykat; this may significantly increase processing time depending on the size of gene counts matrix provided
                        include_snv_dim_red = FALSE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs.
-                       slingshot = TRUE,
-                       color_scale = "YlOrRd",
-                       cell_border = 0,
-                       save_each_plot = TRUE)
+                       slingshot=TRUE,
+                       color_scale='YlOrRd',
+                       cell_border=0,
+                       save_each_plot=TRUE)
 ```
 
 <img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/sample_outputs.png'>
@@ -126,14 +126,14 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
 #### Generate individual SNV plots
 ```
 #Individual SNV's plottable capped at 50 unique.
-ind_snv_plots <- individual_snv_plots(seurat_object = processed_data$SeuratObject,
-                                      processed_snv = processed_data$ProcessedSNV,
-                                      sig_snvs = processed_data$SigSNV,
-                                      output_dir = output_dir,
-                                      slingshot = TRUE,
-                                      save_each_plot = TRUE,
-                                      dimensionality_reduction = "UMAP",
-                                      dynamic_cell_size = FALSE)
+ind_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
+                                      processed_snv=processed_data$ProcessedSNV,
+                                      sig_snvs=processed_data$SigSNV,
+                                      output_dir=output_dir,
+                                      slingshot=TRUE,
+                                      save_each_plot=TRUE,
+                                      dimensionality_reduction='UMAP',
+                                      dynamic_cell_size=FALSE)
 ```
 
 <img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/individual_snv_plots.png'>
@@ -141,23 +141,23 @@ ind_snv_plots <- individual_snv_plots(seurat_object = processed_data$SeuratObjec
 #### Plot individual SNV
 ```
 one_snv_plot <- single_snv_plot(
-       seurat_object = processed_data$SeuratObject,
-       processed_snv = processed_data$ProcessedSNV,
-       snv_of_choice = "1:155169447:C:T",
-       output_dir = "output/1_155169447_C_T",
-       slingshot = TRUE,
-       dimensionality_reduction = "UMAP",
-       dynamic_cell_size = FALSE,
-       save_each_plot = TRUE
+       seurat_object=processed_data$SeuratObject,
+       processed_snv=processed_data$ProcessedSNV,
+       snv_of_choice='1:155169447:C:T',
+       output_dir='output/1_155169447_C_T',
+       slingshot=TRUE,
+       dimensionality_reduction='UMAP',
+       dynamic_cell_size=FALSE,
+       save_each_plot=TRUE
      )
 
 ```
 
 #### Generate exploratory combined plots report
 ```
-generate_report(plot_object = plots,
-                ind_snv_object = ind_snv_plots,
-                hide_ind_plots = TRUE, # Set this to FALSE in order to see plots for each individual SNV.
+generate_report(plot_object=plots,
+                ind_snv_object=ind_snv_plots,
+                hide_ind_plots=TRUE, # Set this to FALSE in order to see plots for each individual SNV.
                 output_dir = output_dir)
 ```
 
@@ -167,39 +167,39 @@ generate_report(plot_object = plots,
 
 #### Generate exploratory combined plot for single SNV of interest
 ```
-generate_report(plot_object = plots,
-                ind_snv_object = one_snv_plot,
-                hide_ind_plots = FALSE,
-                output_dir = output_dir)
+generate_report(plot_object=plots,
+                ind_snv_object=one_snv_plot,
+                hide_ind_plots=FALSE,
+                output_dir=output_dir)
 ```
 #### Generate Transposed SNV plot (with or without labels)
 
 In order to generate a transposed SNV plot, you must have a minimum of 100 unique SNVs in your SNV file. To run the tutorial with sample data, please re-run the above workflow for an individual sample, but using the 'input/sample1_SNVs_large.tsv' file. Once you have generated the processed_data variable, proceed as follows.
 
 ```
-snvs_of_interest = c('1:100213925:C:G','1:151982919:G:C')
+snvs_of_interest = c('1:100213925:C:G', '1:151982919:G:C')
 processed_data$ProcessedSNV['SNV'] <- paste0(processed_data$ProcessedSNV$CHROM, ':', processed_data$ProcessedSNV$POS, ':',
                                 processed_data$ProcessedSNV$REF, ':', processed_data$ProcessedSNV$ALT)
-processed_data$ProcessedSNV['snv_label']<-'not_of_interest'
+processed_data$ProcessedSNV['snv_label'] <- 'not_of_interest'
 df = processed_data$ProcessedSNV
 df[df$SNV %in% snvs_of_interest, 'snv_label'] = 'snv_of_interest'
 processed_data$ProcessedSNV = df
 
-plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
+plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
                        processed_data$ProcessedSNV,
                        processed_data$AggregatedSNV,
                        processed_data$PlotData,
-                       output_dir = output_dir,
-                       include_histograms = TRUE,
-                       dimensionality_reduction = "umap",
-                       include_cell_types = TRUE,
-                       include_copykat = FALSE, # CNV metrics produced by copykat; this may significantly increase processing time depending on the size of gene counts matrix provided
+                       output_dir=output_dir,
+                       include_histograms=TRUE,
+                       dimensionality_reduction='UMAP',
+                       include_cell_types=TRUE,
+                       include_copykat=FALSE, # CNV metrics produced by copykat; this may significantly increase processing time depending on the size of gene counts matrix provided
                        include_snv_dim_red = TRUE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs
-                       snv_label = TRUE, # labels for transposed SNV plot
-                       slingshot = TRUE,
-                       color_scale = "YlOrRd",
-                       cell_border = 0,
-                       save_each_plot = TRUE)
+                       snv_label=TRUE, # labels for transposed SNV plot
+                       slingshot=TRUE,
+                       color_scale='YlOrRd',
+                       cell_border=0,
+                       save_each_plot=TRUE)
 ```
 
 <img src='https://github.com/HorvathLab/scSNViz/blob/5c4811d87b66242339f914df1ea38725ebbd5df4/docs/transposed_snv_plot.png'>
@@ -230,23 +230,23 @@ VlnPlot(sample2, features = c("nFeature_RNA", "nCount_RNA", "percent.mt"), ncol 
 sample2 <- subset(sample2, subset = nFeature_RNA > 1000 & nFeature_RNA < 7500 & nCount_RNA <50000 & percent.mt < 15) # Modify numbers appropriate to your violin plot
 ########
 
-srt_merged <- merge(x=sample1, y=c(sample2), add.cell.ids=c('sample1','sample2'))
-srt_merged <- SCTransform(srt_merged, vars.to.regress = "percent.mt", verbose = F)
+srt_merged <- merge(x=sample1, y=c(sample2), add.cell.ids=c('sample1', 'sample2'))
+srt_merged <- SCTransform(srt_merged, vars.to.regress='percent.mt', verbose=F)
 srt_merged <- RunPCA(srt_merged)
-srt_integrated <- IntegrateLayers(object = srt_merged, method = CCAIntegration, normalization.method = "SCT", new.reduction='integrated', verbose = F) #any of the suggested integration methods in Seurat may be applied here for the methods parameter
-srt_integrated <- FindNeighbors(srt_integrated, reduction = "integrated", dims = 1:30)
-srt_integrated <- FindClusters(srt_integrated, resolution = 0.6)
+srt_integrated <- IntegrateLayers(object=srt_merged, method=CCAIntegration, normalization.method='SCT', new.reduction='integrated', verbose=F) #any of the suggested integration methods in Seurat may be applied here for the methods parameter
+srt_integrated <- FindNeighbors(srt_integrated, reduction='integrated', dims=1:30)
+srt_integrated <- FindClusters(srt_integrated, resolution=0.6)
 ```
 
 #### Prepare SNV data
 The sample labelling must be consistent with the orig.ident set in the step that prepares the integrated data.
 
 ```
-snv_sample1 <- read.table("input/sample1_SNVs.tsv", sep = "\t", header = T)
-snv_sample2 <- read.table("input/sample2_SNVs.tsv", sep = "\t", header = T)
+snv_sample1 <- read.table('input/sample1_SNVs.tsv', sep='\t', header=T)
+snv_sample2 <- read.table('input/sample2_SNVs.tsv', sep='\t', header=T)
 
-snv_sample1$ReadGroup = paste0('sample1_',snv_sample1$ReadGroup) # these IDs must match the added cell IDs from above
-snv_sample2$ReadGroup = paste0('sample2_',snv_sample2$ReadGroup) # these IDs must match the added cell IDs from above
+snv_sample1$ReadGroup = paste0('sample1_', snv_sample1$ReadGroup) # these IDs must match the added cell IDs from above
+snv_sample2$ReadGroup = paste0('sample2_', snv_sample2$ReadGroup) # these IDs must match the added cell IDs from above
 
 snv_file <- rbind(snv_sample1,snv_sample2)
 write_tsv(snv_file,'snv_file_integrated.tsv')
@@ -255,35 +255,35 @@ write_tsv(snv_file,'snv_file_integrated.tsv')
 
 #### Preprocess the SNV data and incorporate the integrated Seurat object into the workflow. Generate plots.
 ```
-processed_data <- preprocess_snv_data(rds_obj = srt_integrated,
-                                      snv_file = "snv_file_integrated.tsv",
-                                      dimensionality_reduction = "UMAP", #you may only generate UMAP plots with integrated samples
-                                      th_vars = 0,
-                                      th_reads = 0,
-                                      enable_integrated = TRUE,
-                                      integrated_reduction_name = 'integrated',
-                                      enable_sctype = TRUE, # to classify cell types using scType
-                                      tissue_type = "Immunesystem", #other tissue options include: Pancreas, Liver, Eye, Kidney, Brain, Lung, Adrenal, Heart, Intestine, Muscle, Placenta, Spleen, Stomach, Thymus
-                                      generate_statistics = TRUE,
-                                      output_dir = output_dir)
+processed_data <- preprocess_snv_data(rds_obj=srt_integrated,
+                                      snv_file='snv_file_integrated.tsv',
+                                      dimensionality_reduction='UMAP', #you may only generate UMAP plots with integrated samples
+                                      th_vars=0,
+                                      th_reads=0,
+                                      enable_integrated=TRUE,
+                                      integrated_reduction_name='integrated',
+                                      enable_sctype=TRUE, # to classify cell types using scType
+                                      tissue_type='Immunesystem', #other tissue options include: Pancreas, Liver, Eye, Kidney, Brain, Lung, Adrenal, Heart, Intestine, Muscle, Placenta, Spleen, Stomach, Thymus
+                                      generate_statistics=TRUE,
+                                      output_dir=output_dir)
 ```
 
 #### Generate 3D dimensionality reduction plots
 ```
-plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
+plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
                        processed_data$ProcessedSNV,
                        processed_data$AggregatedSNV,
                        processed_data$PlotData,
-                       output_dir = output_dir,
-                       include_histograms = TRUE,  
-                       dimensionality_reduction = "umap",
-                       include_cell_types = TRUE,
-                       include_copykat = FALSE, # this is not currently an option for integrated objects
-                       slingshot = FALSE, # this is not currently an option for integrated objects
-                       color_scale = "YlOrRd",
-                       cell_border = 0,
-                       enable_integrated = TRUE,
-                       save_each_plot = TRUE)
+                       output_dir=output_dir,
+                       include_histograms=TRUE,  
+                       dimensionality_reduction='umap',
+                       include_cell_types=TRUE,
+                       include_copykat=FALSE, # this is not currently an option for integrated objects
+                       slingshot=FALSE, # this is not currently an option for integrated objects
+                       color_scale='YlOrRd',
+                       cell_border=0,
+                       enable_integrated=TRUE,
+                       save_each_plot=TRUE)
 ```
 
 <img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/integrated_plot.png'>
@@ -291,23 +291,23 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
 
 #### Generate individual SNV plots
 ```
-ind_snv_plots <- individual_snv_plots(seurat_object = processed_data$SeuratObject,
-                                      processed_snv = processed_data$ProcessedSNV,
-                                      sig_snvs = processed_data$SigSNV,
-                                      output_dir = output_dir,
-                                      slingshot = FALSE,
-                                      save_each_plot = TRUE,
-                                      dimensionality_reduction = "UMAP",
-                                      dynamic_cell_size = FALSE,
-                                      enable_integrated = TRUE)
+ind_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
+                                      processed_snv=processed_data$ProcessedSNV,
+                                      sig_snvs=processed_data$SigSNV,
+                                      output_dir=output_dir,
+                                      slingshot=FALSE,
+                                      save_each_plot=TRUE,
+                                      dimensionality_reduction='UMAP',
+                                      dynamic_cell_size=FALSE,
+                                      enable_integrated=TRUE)
 ```
 
 #### Generate exploratory combined plots report
 ```
-generate_report(plot_object = plots,
-                ind_snv_object = ind_snv_plots,
-                hide_ind_plots = TRUE, # individual plots for each SNV are hidden
-                output_dir = output_dir)
+generate_report(plot_object=plots,
+                ind_snv_object=ind_snv_plots,
+                hide_ind_plots=TRUE, # individual plots for each SNV are hidden
+                output_dir=output_dir)
 ```
 
 <img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/integrated_output_example.png'>
