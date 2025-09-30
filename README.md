@@ -17,9 +17,9 @@ sudo apt install libfontconfig1-dev libharfbuzz-dev libfribidi-dev libcurl4-open
 install.packages('devtools')
 library(devtools)
 
-install_github("navinlabcode/copykat")
+install_github('navinlabcode/copykat')
 
-if (!require("BiocManager", quietly = TRUE))
+if (!require('BiocManager', quietly = TRUE))
     install.packages("BiocManager")
 
 BiocManager::install('glmGamPoi')
