@@ -82,14 +82,15 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
                        aggregated_snv = processed_data$AggregatedSNV,
                        plot_data = processed_data$PlotData,
                        output_dir = output_dir,
-                       include_histograms = TRUE,  
+                       include_histograms = TRUE,
                        dimensionality_reduction = "umap",
                        include_cell_types = TRUE,
-                       include_copykat = FALSE, 
+                       include_copykat = FALSE,
                        include_snv_dim_red = FALSE,
                        slingshot = TRUE,
                        color_scale = "YlOrRd",
                        cell_border = 0,
+                       snv_label = FALSE,
                        save_each_plot = TRUE)
 }
 
