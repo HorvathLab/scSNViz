@@ -198,15 +198,15 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
                        dimensionality_reduction = "umap",
                        include_cell_types = TRUE,
                        include_copykat = FALSE, # CNV metrics produced by copykat; this may significantly increase processing time depending on the size of gene counts matrix provided
-                       include_snv_dim_red = TRUE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs.
-                       slingshot = TRUE,
+                       include_snv_dim_red = TRUE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs
                        snv_label = TRUE, # labels for transposed SNV plot
+                       slingshot = TRUE,
                        color_scale = "YlOrRd",
                        cell_border = 0,
                        save_each_plot = TRUE)
 ```
 
-<img src='https://github.com/HorvathLab/scSNViz/blob/ddd52c3f087a1a44989756f666427b987ae4e753/docs/transposed_snv_plot.png'>
+<img src='https://github.com/HorvathLab/scSNViz/blob/5c4811d87b66242339f914df1ea38725ebbd5df4/docs/transposed_snv_plot.png'>
 
 
 ## Workflow for Multiple Samples
