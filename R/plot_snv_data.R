@@ -58,7 +58,6 @@
 #'                        slingshot = TRUE,
 #'                        color_scale = "YlOrRd",
 #'                        cell_border = 0,
-#'                        snv_label = FALSE,
 #'                        save_each_plot = TRUE)
 #' }
 #'
@@ -483,7 +482,7 @@ plots <- c(plots, new_plots)
     dd = processed_snv_flt[!duplicated(processed_snv_flt$SNV),]
     cell_ids = data.frame(ReadGroup = unique(processed_snv_flt$ReadGroup),cell_n=(1:length(unique(processed_snv_flt$ReadGroup))))
     snv_ids = data.frame(SNV = unique(processed_snv_flt$SNV), snv_val=(1:length(unique(processed_snv_flt$SNV))))
-    if (snv_label){
+    if ('snv_label' %in% colnames(processed_snv)){
       snv_ids = merge(snv_ids, dd[c('SNV','snv_label')], by='SNV',all.x=TRUE)}
     df_transpose = merge(processed_snv_flt, cell_ids, by='ReadGroup',all.x=TRUE)
     df_transpose = merge(df_transpose, snv_ids, by='SNV',all.x=TRUE)
@@ -505,13 +504,13 @@ plots <- c(plots, new_plots)
     srt_transposed <- FindClusters(srt_transposed, verbose=F)
     srt_transposed = RunUMAP(srt_transposed, n.components = 3, dims=1:10, verbose=F)
     
-    if (snv_label){srt_transposed@meta.data$snv_label = snv_ids[colnames(srt_transposed),]$snv_label}
+    if ('snv_label' %in% colnames(processed_snv)){srt_transposed@meta.data$snv_label = snv_ids[colnames(srt_transposed),]$snv_label}
     colnames(srt_transposed) = snv_ids[colnames(srt_transposed),]$SNV
     snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = dimensionality_reduction))
-    if (snv_label){snv_mat_reduced['snv_label'] = srt_transposed$snv_label}
+    if ('snv_label' %in% colnames(processed_snv)){snv_mat_reduced['snv_label'] = srt_transposed$snv_label}
 
     df_3dplot_snv <- as.data.frame(snv_mat_reduced)
-    if (snv_label){
+    if ('snv_label' %in% colnames(processed_snv)){
       colnames(df_3dplot_snv) <- c(
         paste0(toupper(dimensionality_reduction), "_1"),
         paste0(toupper(dimensionality_reduction), "_2"),
@@ -525,7 +524,7 @@ plots <- c(plots, new_plots)
         paste0(toupper(dimensionality_reduction), "_3")
       )
     }
-    if (snv_label){
+    if ('snv_label' %in% colnames(processed_snv)){
       trans_snv_plot <- plot_ly(
         type = "scatter3d", mode = "lines+markers"
       ) %>% add_markers(
