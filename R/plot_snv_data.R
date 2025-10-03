@@ -511,8 +511,7 @@ plots <- c(plots, new_plots)
     if ('snv_label' %in% colnames(processed_snv)){
       srt_transposed@meta.data$snv_label = snv_ids[colnames(srt_transposed),]$snv_label
       snv_mat_reduced['snv_label'] = srt_transposed@meta.data$snv_label
-      # rownames(snv_mat_reduced) = colnames(srt_transposed)
-    }
+      }
     rownames(snv_mat_reduced) = snv_ids[colnames(srt_transposed),]$SNV
 
     df_3dplot_snv <- as.data.frame(snv_mat_reduced)
