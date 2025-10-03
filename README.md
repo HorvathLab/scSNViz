@@ -195,7 +195,6 @@ plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
                        include_cell_types=TRUE,
                        include_copykat=FALSE, # CNV metrics produced by copykat; this may significantly increase processing time depending on the size of gene counts matrix provided
                        include_snv_dim_red=TRUE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs
-                       snv_label=TRUE, # labels for transposed SNV plot
                        slingshot=TRUE,
                        color_scale='YlOrRd',
                        cell_border=0,
