@@ -479,35 +479,40 @@ plots <- c(plots, new_plots)
       stop("processed_snv contains no valid SNVs or ReadGroups.")
     }
     processed_snv_flt = processed_snv[is.numeric(processed_snv$VAF)==1 & is.finite(processed_snv$VAF)==TRUE,]
-    dd = processed_snv_flt[!duplicated(processed_snv_flt$SNV),]
-    cell_ids = data.frame(ReadGroup = unique(processed_snv_flt$ReadGroup),cell_n=(1:length(unique(processed_snv_flt$ReadGroup))))
-    snv_ids = data.frame(SNV = unique(processed_snv_flt$SNV), snv_val=(1:length(unique(processed_snv_flt$SNV))))
     if ('snv_label' %in% colnames(processed_snv)){
-      snv_ids = merge(snv_ids, dd[c('SNV','snv_label')], by='SNV',all.x=TRUE)}
-    df_transpose = merge(processed_snv_flt, cell_ids, by='ReadGroup',all.x=TRUE)
-    df_transpose = merge(df_transpose, snv_ids, by='SNV',all.x=TRUE)
+      snv_ids = processed_snv_flt[!duplicated(processed_snv_flt$SNV),c('SNV','snv_label')]
+      rownames(snv_ids) = 1:nrow(snv_ids)
+      } else {
+      snv_ids = processed_snv_flt[!duplicated(processed_snv_flt$SNV),c('SNV')]
+      }
+    snv_ids['snv_val'] = 1:nrow(snv_ids)
+    cell_ids = data.frame(ReadGroup = unique(processed_snv_flt$ReadGroup), cell_n=(1:length(unique(processed_snv_flt$ReadGroup))))
+    df_transpose = merge(processed_snv_flt, cell_ids, by='ReadGroup', all.x=TRUE)
+    df_transpose = merge(df_transpose, snv_ids, by='SNV', all.x=TRUE)
     
-    mtx = Matrix(0, nrow=length(unique(df_transpose$ReadGroup)), ncol=length(unique(df_transpose$SNV)))
+    mtx = Matrix(0, nrow=nrow(cell_ids), ncol=nrow(snv_ids))
     mtx[cbind(df_transpose$cell_n,df_transpose$snv_val)] <- df_transpose$SNVCount
     colnames(mtx) <- 1:length(snv_ids$SNV)
-    rownames(mtx) <- cell_ids$ReadGroup
 
     srt_transposed <- CreateSeuratObject(mtx, min.features=10)
-    srt_transposed <- subset(srt_transposed, nFeature_RNA>10) #, subset = nCount_RNA > 1)
+    srt_transposed <- subset(srt_transposed, nFeature_RNA>10)
     srt_transposed <- NormalizeData(srt_transposed, verbose=F)
-    srt_transposed <- FindVariableFeatures(srt_transposed, selection.method = "vst", verbose=F)
+    srt_transposed <- FindVariableFeatures(srt_transposed, verbose=F)
     all.genes <- rownames(srt_transposed)
 
-    srt_transposed <- ScaleData(srt_transposed, verbose=F)
-    srt_transposed = RunPCA(srt_transposed, verbose=F)
+    srt_transposed <- ScaleData(srt_transposed, features=all.genes, verbose=F)
+    srt_transposed = RunPCA(srt_transposed, features=VariableFeatures(object=srt_transposed), verbose=F)
     srt_transposed <- FindNeighbors(srt_transposed, dim=1:10, verbose=F)
     srt_transposed <- FindClusters(srt_transposed, verbose=F)
     srt_transposed = RunUMAP(srt_transposed, n.components = 3, dims=1:10, verbose=F)
-    
-    if ('snv_label' %in% colnames(processed_snv)){srt_transposed@meta.data$snv_label = snv_ids[colnames(srt_transposed),]$snv_label}
-    colnames(srt_transposed) = snv_ids[colnames(srt_transposed),]$SNV
+
     snv_mat_reduced <- as.data.frame(Embeddings(srt_transposed, reduction = dimensionality_reduction))
-    if ('snv_label' %in% colnames(processed_snv)){snv_mat_reduced['snv_label'] = srt_transposed$snv_label}
+
+    if ('snv_label' %in% colnames(processed_snv)){
+      srt_transposed@meta.data$snv_label = snv_ids[colnames(srt_transposed),]$snv_label
+      snv_mat_reduced['snv_label'] = srt_transposed@meta.data$snv_label
+      }
+    rownames(snv_mat_reduced) = snv_ids[colnames(srt_transposed),]$SNV
 
     df_3dplot_snv <- as.data.frame(snv_mat_reduced)
     if ('snv_label' %in% colnames(processed_snv)){
