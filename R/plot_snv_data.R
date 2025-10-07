@@ -597,7 +597,11 @@ plots <- c(plots, new_plots)
     cat("Running CopyKat. This may take a while...\n")
     cts <- GetAssayData(seurat_object, layer = "counts", assay = "SCT")
     ckt <- copykat(cts, sam.name = "sample_name", n.cores = cores)
+    if (sys == "Darwin"){
+      options(bitmapType = "quartz")
+    } else {
     options(bitmapType = "C_X11")
+    }
     seurat_object[["karyotype"]] <- "Unknown"
     seurat_object[["karyotype"]][rownames(ckt$pred), ] <- ckt$pred[, 2]
     df.srt <- as.data.frame(seurat_object@meta.data[, c("seurat_clusters", "karyotype")])
