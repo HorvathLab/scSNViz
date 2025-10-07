@@ -90,7 +90,6 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
                        slingshot = TRUE,
                        color_scale = "YlOrRd",
                        cell_border = 0,
-                       snv_label = FALSE,
                        save_each_plot = TRUE)
 }
 
