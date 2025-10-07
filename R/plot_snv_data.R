@@ -196,7 +196,12 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
       ggsave(p, filename = pth, device = "png")
     }
   }
-    options(bitmapType = "C_X11")
+    if (sys == "Darwin"){
+      options(bitmapType = "quartz")
+    } 
+    else {
+      options(bitmapType = "C_X11")
+      }
   }
   plots[["histograms"]] <- histograms
 
