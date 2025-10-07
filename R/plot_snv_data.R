@@ -4,7 +4,7 @@
 #'
 #' @importFrom Seurat Embeddings as.SingleCellExperiment GetAssayData
 #' @importFrom copykat copykat CNA.MCMC annotateGenes.hg20 annotateGenes.mm10 baseline.GMM baseline.norm.cl convert.all.bins.hg20 heatmap.3
-#' @importFrom ggplot2 ggplot ggsave aes geom_histogram xlab ylab theme element_text element_blank theme_minimal after_stat
+#' @importFrom ggplot2 ggplot ggsave aes geom_histogram xlab ylab theme element_text element_blank theme_minimal after_stat scale_fill_manual
 #' @importFrom dplyr %>% filter group_by
 #' @importFrom plotly ggplotly add_markers plot_ly add_trace layout as_widget
 #' @importFrom htmlwidgets saveWidget
