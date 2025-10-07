@@ -177,14 +177,6 @@ generate_report(plot_object=plots,
 In order to generate a transposed SNV plot, you must have a minimum of 100 unique SNVs in your SNV file. To run the tutorial with sample data, please re-run the above workflow for an individual sample, but using the 'input/sample1_SNVs_large.tsv' file. Once you have generated the processed_data variable, proceed as follows.
 
 ```
-snvs_of_interest = c('1:100213925:C:G', '1:151982919:G:C')
-processed_data$ProcessedSNV['SNV'] <- paste0(processed_data$ProcessedSNV$CHROM, ':', processed_data$ProcessedSNV$POS, ':',
-                                processed_data$ProcessedSNV$REF, ':', processed_data$ProcessedSNV$ALT)
-processed_data$ProcessedSNV['snv_label'] <- 'not_of_interest'
-df = processed_data$ProcessedSNV
-df[df$SNV %in% snvs_of_interest, 'snv_label'] = 'snv_of_interest'
-processed_data$ProcessedSNV = df
-
 plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
                        processed_data$ProcessedSNV,
                        processed_data$AggregatedSNV,
