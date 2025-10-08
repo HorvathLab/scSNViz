@@ -174,24 +174,8 @@ generate_report(plot_object=plots,
 ```
 #### Generate Transposed SNV plot (with or without labels)
 
-In order to generate a transposed SNV plot, you must have a minimum of 100 unique SNVs in your SNV file. To run the tutorial with sample data, please re-run the above workflow for an individual sample, but using the 'input/sample1_SNVs_large.tsv' file. Once you have generated the processed_data variable, proceed as follows.
+In order to generate a transposed SNV plot, you must have a minimum of 100 unique SNVs in your SNV file. To run the tutorial with sample data, please re-run the above workflow for an individual sample, but using the 'input/sample1_SNVs_large.tsv' file. Once you have generated the processed_data variable, plot_snv_data may be run with the include_snv_dim_red variable set to TRUE.
 
-```
-plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
-                       processed_data$ProcessedSNV,
-                       processed_data$AggregatedSNV,
-                       processed_data$PlotData,
-                       output_dir=output_dir,
-                       include_histograms=TRUE,
-                       dimensionality_reduction='UMAP',
-                       include_cell_types=TRUE,
-                       include_copykat=FALSE, # CNV metrics produced by copykat; this may significantly increase processing time depending on the size of gene counts matrix provided
-                       include_snv_dim_red=TRUE, # IF, set to TRUE, this function transposes the SNVxBarcode matrix and generates a dimensionality reduction plot to view similarity between SNVs
-                       slingshot=TRUE,
-                       color_scale='YlOrRd',
-                       cell_border=0,
-                       save_each_plot=TRUE)
-```
 
 <img src='https://github.com/HorvathLab/scSNViz/blob/5f0e8d38f135997719cf3ebf9282665074be5632/docs/transposed_snv_plot.png'>
 
