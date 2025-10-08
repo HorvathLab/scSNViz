@@ -162,7 +162,7 @@ generate_report(plot_object=plots,
 ```
 
 
-<img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/Exploratory_combined_plots.png'>
+<img src='https://github.com/HorvathLab/scSNViz/blob/dev/docs/Exploratory_combined_plots.png'>
 
 
 #### Generate exploratory combined plot for single SNV of interest
@@ -284,7 +284,7 @@ generate_report(plot_object=plots,
                 output_dir=output_dir)
 ```
 
-<img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/integrated_output_example.png'>
+<img src='https://github.com/HorvathLab/scSNViz/blob/dev/docs/integrated_output_example.png'>
 
 #### Contact Information
 Please contact Siera Martinez (siera.martinez@gwu.edu) with any questions.
