@@ -536,23 +536,25 @@ plots <- c(plots, new_plots)
     }
     if ('snv_label' %in% colnames(processed_snv)){
       trans_snv_plot <- plot_ly(
-        type = "scatter3d", mode = "lines+markers"
+        type = "scatter3d", mode = "markers"
       ) %>% add_markers(
         data = df_3dplot_snv,
         x = ~get(colnames(df_3dplot_snv)[1]),
         y = ~get(colnames(df_3dplot_snv)[2]),
         z = ~get(colnames(df_3dplot_snv)[3]),
-        color=~snv_label, marker = list(size = cell_border, colorscale = color_scale, opacity = 0.5),
+        size = 0.05, opacity = 1.00,
+        color=~snv_label, marker = list(colorscale = color_scale),
         text = rownames(df_3dplot_snv), hoverinfo = "text")
       } else {
       trans_snv_plot <- plot_ly(
-        type = "scatter3d", mode = "lines+markers"
+        type = "scatter3d", mode = "markers"
       ) %>% add_markers(
         data = df_3dplot_snv,
         x = ~get(colnames(df_3dplot_snv)[1]),
         y = ~get(colnames(df_3dplot_snv)[2]),
         z = ~get(colnames(df_3dplot_snv)[3]),
-        marker = list(size = cell_border, colorscale = color_scale, opacity = 0.5),
+        size = 0.05, opacity = 1.00,
+        marker = list(colorscale = color_scale),
         text = rownames(df_3dplot_snv), hoverinfo = "text")
     }
 
@@ -579,7 +581,8 @@ plots <- c(plots, new_plots)
 
     if (save_each_plot && !is.null(output_dir)) {
       trans_snv_plot <- trans_snv_plot %>%
-        layout(title = "Transposed SNV matrix", title = list(font = 'black'), margin = list(t = 50))
+        layout(title = "Transposed SNV matrix", title = list(font = 'black'), margin = list(t = 50),
+               legend = list(itemsizing = 'constant'))
       saveWidget(as_widget(trans_snv_plot), file = file.path(
         output_dir, "SNV_data_plots", "Transposed_SNV_Matrix.html"),
         selfcontained = F, libdir = "lib"
