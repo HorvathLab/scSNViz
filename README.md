@@ -12,6 +12,8 @@ Ubuntu, MacOS and Windows are currently supported.
 If using Debian OS, you may need to install the following libraries:
 sudo apt install libfontconfig1-dev libharfbuzz-dev libfribidi-dev libcurl4-openssl-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev libwebp-dev libcairo2
 
+Note: If using macOS or a Linux-based distribution, the plot_snv_data() and individual_snv_plots() functions will prompt the user to select the number of cores for parallel processing. This can drastically improve the runtime for large samples. The number of cores used is at the user’s discretion. For certain versions of macOS, this is limited to two cores, if you encounter issues using more than two, this may be the cause. If you are unsure how many cores are available, the R parallel package (loaded with scsnviz) provides the detectCores() function to check.
+
 ```
 # Enter commands in R (or R studio)
 install.packages('devtools')
