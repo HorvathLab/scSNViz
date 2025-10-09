@@ -2,7 +2,7 @@
 scSNViz is a specialized tool for the visualization and analysis of single-cell expressed SNVs from cell-barcoded scRNA-seq data. scSNViz enables quantitative assessment of SNV expression, 2D and 3D visualization of individual or user-defined groups of variants, expression-based clustering of SNVs, and cross-sample comparisons. Beyond visualization, scSNViz enables the estimation, summarization, and graphical representation of SNV expression metrics, facilitating the study of allelic dynamics across somatic, germline, and RNA-originating SNVs. To support integrative transcriptomic analyses, scSNViz interoperates with established frameworks including Seurat for clustering, Slingshot for trajectory inference, scType for cell type annotation, and CopyKat for copy number profiling.
 
  
-<img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/scSNViz_PanelA.png' width=50% height=50%>
+<img src='https://github.com/HorvathLab/scSNViz/blob/5b9c6326effd5bf75d08b17ef54abb2c393bf8aa/docs/scSNViz_PanelA.png' width=50% height=50%>
 
 
 ## Installation
