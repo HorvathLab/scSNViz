@@ -288,4 +288,4 @@ generate_report(plot_object=plots,
 Please contact Siera Martinez (siera.martinez@gwu.edu) with any questions.
 
 #### Copyright and licensing
-Code copyright 2024 scSNViz https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/LICENSE.md
+Code copyright 2024 scSNViz https://github.com/HorvathLab/scSNViz/blob/578a2f5e6b3110f60c8c105cc216acd2112c8f83/LICENSE.md
