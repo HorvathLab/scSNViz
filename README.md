@@ -2,7 +2,7 @@
 scSNViz is a specialized tool for the visualization and analysis of single-cell expressed SNVs from cell-barcoded scRNA-seq data. scSNViz enables quantitative assessment of SNV expression, 2D and 3D visualization of individual or user-defined groups of variants, expression-based clustering of SNVs, and cross-sample comparisons. Beyond visualization, scSNViz enables the estimation, summarization, and graphical representation of SNV expression metrics, facilitating the study of allelic dynamics across somatic, germline, and RNA-originating SNVs. To support integrative transcriptomic analyses, scSNViz interoperates with established frameworks including Seurat for clustering, Slingshot for trajectory inference, scType for cell type annotation, and CopyKat for copy number profiling.
 
  
-<img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/scSNViz_PanelA.png' width=50% height=50%>
+<img src='https://github.com/HorvathLab/scSNViz/blob/5b9c6326effd5bf75d08b17ef54abb2c393bf8aa/docs/scSNViz_PanelA.png' width=50% height=50%>
 
 
 ## Installation
@@ -11,6 +11,8 @@ Ubuntu, MacOS and Windows are currently supported.
 
 If using Debian OS, you may need to install the following libraries:
 sudo apt install libfontconfig1-dev libharfbuzz-dev libfribidi-dev libcurl4-openssl-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev libwebp-dev libcairo2
+
+Note: If using macOS or a Linux-based distribution, the plot_snv_data() and individual_snv_plots() functions will prompt the user to select the number of cores for parallel processing. This can drastically improve the runtime for large samples. The number of cores used is at the user’s discretion. For certain versions of macOS, this is limited to two cores, if you encounter issues using more than two, this may be the cause. If you are unsure how many cores are available, the R parallel package (loaded with scsnviz) provides the detectCores() function to check.
 
 ```
 # Enter commands in R (or R studio)
@@ -74,10 +76,6 @@ VlnPlot(sample1, features=c('nFeature_RNA', 'nCount_RNA', 'percent.mt'), ncol=3)
 sample1 <- subset(sample1, subset= nFeature_RNA>1000 & nFeature_RNA<7500 & nCount_RNA<50000 & percent.mt<15) # Modify numbers appropriate to your violin plot
 ```
 
-The below unfiltered and filtered violin plots show the quality control process, filtering cells out based on percent mitochondria, number of features and number of counts.
-
-<img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/prefilt_filt_vln.png' width=50% height=50%>
-
 
 #### Scale and normalize the data. Then, run a PCA.
 ```
@@ -121,7 +119,7 @@ plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
                        save_each_plot=TRUE)
 ```
 
-<img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/sample_outputs.png'>
+<img src='https://github.com/HorvathLab/scSNViz/blob/0fc797784b905b29c744968114a5e2192de213b2/docs/sample_outputs.png'>
 
 #### Generate individual SNV plots
 ```
@@ -136,7 +134,7 @@ ind_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
                                       dynamic_cell_size=FALSE)
 ```
 
-<img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/individual_snv_plots.png'>
+<img src='https://github.com/HorvathLab/scSNViz/blob/0fc797784b905b29c744968114a5e2192de213b2/docs/individual_snv_plots.png'>
 
 #### Plot individual SNV
 ```
@@ -260,7 +258,7 @@ plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
                        save_each_plot=TRUE)
 ```
 
-<img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/integrated_plot.png'>
+<img src='https://github.com/HorvathLab/scSNViz/blob/0fc797784b905b29c744968114a5e2192de213b2/docs/integrated_plot.png'>
 
 
 #### Generate individual SNV plots
