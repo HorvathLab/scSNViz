@@ -74,10 +74,6 @@ VlnPlot(sample1, features=c('nFeature_RNA', 'nCount_RNA', 'percent.mt'), ncol=3)
 sample1 <- subset(sample1, subset= nFeature_RNA>1000 & nFeature_RNA<7500 & nCount_RNA<50000 & percent.mt<15) # Modify numbers appropriate to your violin plot
 ```
 
-The below unfiltered and filtered violin plots show the quality control process, filtering cells out based on percent mitochondria, number of features and number of counts.
-
-<img src='https://github.com/HorvathLab/scSNViz/blob/0fc797784b905b29c744968114a5e2192de213b2/docs/prefilt_filt_vln.png' width=50% height=50%>
-
 
 #### Scale and normalize the data. Then, run a PCA.
 ```
