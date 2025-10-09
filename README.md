@@ -76,7 +76,7 @@ sample1 <- subset(sample1, subset= nFeature_RNA>1000 & nFeature_RNA<7500 & nCoun
 
 The below unfiltered and filtered violin plots show the quality control process, filtering cells out based on percent mitochondria, number of features and number of counts.
 
-<img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/prefilt_filt_vln.png' width=50% height=50%>
+<img src='https://github.com/HorvathLab/scSNViz/blob/0fc797784b905b29c744968114a5e2192de213b2/docs/prefilt_filt_vln.png' width=50% height=50%>
 
 
 #### Scale and normalize the data. Then, run a PCA.
@@ -121,7 +121,7 @@ plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
                        save_each_plot=TRUE)
 ```
 
-<img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/sample_outputs.png'>
+<img src='https://github.com/HorvathLab/scSNViz/blob/0fc797784b905b29c744968114a5e2192de213b2/docs/sample_outputs.png'>
 
 #### Generate individual SNV plots
 ```
@@ -136,7 +136,7 @@ ind_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
                                       dynamic_cell_size=FALSE)
 ```
 
-<img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/individual_snv_plots.png'>
+<img src='https://github.com/HorvathLab/scSNViz/blob/0fc797784b905b29c744968114a5e2192de213b2/docs/individual_snv_plots.png'>
 
 #### Plot individual SNV
 ```
@@ -260,7 +260,7 @@ plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
                        save_each_plot=TRUE)
 ```
 
-<img src='https://github.com/HorvathLab/NGS/blob/scSNViz_R_v1.0.0/scSNViz/docs/integrated_plot.png'>
+<img src='https://github.com/HorvathLab/scSNViz/blob/0fc797784b905b29c744968114a5e2192de213b2/docs/integrated_plot.png'>
 
 
 #### Generate individual SNV plots
