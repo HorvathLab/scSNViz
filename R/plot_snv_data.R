@@ -489,7 +489,9 @@ plots <- c(plots, new_plots)
       rownames(snv_ids) = 1:nrow(snv_ids)
       } else {
       snv_ids = processed_snv_flt[!duplicated(processed_snv_flt$SNV),c('SNV')]
-      }
+      snv_ids = as.data.frame(snv_ids)
+      colnames(snv_ids) = 'SNV'
+    }
     snv_ids['snv_val'] = 1:nrow(snv_ids)
     cell_ids = data.frame(ReadGroup = unique(processed_snv_flt$ReadGroup), cell_n=(1:length(unique(processed_snv_flt$ReadGroup))))
     df_transpose = merge(processed_snv_flt, cell_ids, by='ReadGroup', all.x=TRUE)
