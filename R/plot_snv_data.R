@@ -498,7 +498,10 @@ plots <- c(plots, new_plots)
     df_transpose = merge(df_transpose, snv_ids, by='SNV', all.x=TRUE)
     
     mtx = Matrix(0, nrow=nrow(cell_ids), ncol=nrow(snv_ids))
+
+    mtx = Matrix(0, nrow=nrow(cell_ids)*2, ncol=nrow(snv_ids))
     mtx[cbind(df_transpose$cell_n,df_transpose$snv_val)] <- df_transpose$SNVCount
+    mtx[cbind(max(df_transpose$cell_n)+df_transpose$cell_n,df_transpose$snv_val)] <- df_transpose$RefCount
     colnames(mtx) <- 1:length(snv_ids$SNV)
 
     srt_transposed <- CreateSeuratObject(mtx, min.features=10)
