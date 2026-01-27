@@ -285,7 +285,7 @@ generate_report(plot_object=plots,
 <img src='https://github.com/HorvathLab/scSNViz/blob/dev/docs/integrated_output_example.png'>
 
 #### Contact Information
-Please contact Siera Martinez (siera.martinez@gwu.edu) with any questions.
+Please contact Siera Martinez (siera.martinez@gwu.edu) or Luke Johnson (luke.johnson@gwu.edu) with any questions.
 
 #### Copyright and licensing
 Code copyright 2024 scSNViz https://github.com/HorvathLab/scSNViz/blob/main/LICENSE.md
