@@ -49,16 +49,16 @@ The plot can be saved individually in the specified output_dir if save_each_plot
 \examples{
 # Example usage:
 \dontrun{
-single_gene_plot <- single_gene_snvs_plot(
-                  seurat_object = processed_data$SeuratObject,
-                  processed_snv = processed_data$ProcessedSNV,
-                  gene_of_choice = "1:155169447:C:T",
-                  output_dir = "output/individual_plots",
-                  slingshot = T,
-                  dimensionality_reduction = "UMAP",
-                  dynamic_cell_size = F,
-                  save_each_plot = T
-              )
-            }
+single_gene_plot <- single_gene_plot(
+       seurat_object=processed_data$SeuratObject,
+       processed_snv=processed_data$ProcessedSNV,
+       gene_of_choice=gene,
+       output_dir=paste0('output/',gene),
+       slingshot=TRUE,
+       dimensionality_reduction='UMAP',
+       dynamic_cell_size=FALSE,
+       save_each_plot=TRUE
+       )
+       }
 
 }
