@@ -76,6 +76,16 @@ individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_
                       "SNVCount", "RefCount", "VAF", "sampleid")]
   
   snv_options <- gsub("_", ":", head(sig_snvs$SNV, 50))
+  
+  # Ordering fix
+  varients <- snv_options
+  split_vars <- strsplit(variants, ":")
+  chrs_raw <- sapply(split_vars, `[`, 1)
+  pos <- as.numeric(sapply(split_vars, `[`, 2))
+  chr_order <- c(as.character(1:22), "X", "Y", "x", "y")
+  chrs_factor <- factor(chrs_raw, levels = chr_order)
+  sort_index <- order(chrs_factor, pos)
+  snv_options <- variants[sort_index]
 
   individual_SNV_html <- NULL
   curves <- NULL
