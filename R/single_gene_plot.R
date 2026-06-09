@@ -27,17 +27,17 @@
 #' @examples
 #' # Example usage:
 #' \dontrun{
-#' single_gene_plot <- single_gene_snvs_plot(
-#'                   seurat_object = processed_data$SeuratObject,
-#'                   processed_snv = processed_data$ProcessedSNV,
-#'                   gene_of_choice = "1:155169447:C:T",
-#'                   output_dir = "output/individual_plots",
-#'                   slingshot = T,
-#'                   dimensionality_reduction = "UMAP",
-#'                   dynamic_cell_size = F,
-#'                   save_each_plot = T
-#'               )
-#'             }
+#' single_gene_plot <- single_gene_plot(
+#'        seurat_object=processed_data$SeuratObject,
+#'        processed_snv=processed_data$ProcessedSNV,
+#'        gene_of_choice=gene,
+#'        output_dir=paste0('output/',gene),
+#'        slingshot=TRUE,
+#'        dimensionality_reduction='UMAP',
+#'        dynamic_cell_size=FALSE,
+#'        save_each_plot=TRUE
+#'        )
+#'        }
 #'
 #' @export
 #'
@@ -45,12 +45,6 @@ single_gene_plot <- function(seurat_object, processed_snv, gene_of_choice, outpu
                                  dimensionality_reduction = "UMAP", dynamic_cell_size = F, save_each_plot = F) {
 
   cat("\nGenerating individual gene SNVs plot...\n")
-
-#  if (snv_of_choice == "CHROM:POS:REF:ALT"){
-#    stop("Input your snv of choice with the following format CHR:POS:REF:ALT. Currently input set to default.")
-#  } else if (!is_valid_snv(snv_of_choice)){
-#    stop("SNV not in valid format CHROM:POS:REF:ALT. Example: 1:155169447:C:T")
-#  }
 
   valid_reductions <- c("umap", "pca", "tsne")
   dimensionality_reduction <- tolower(dimensionality_reduction)
