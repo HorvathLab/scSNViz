@@ -219,7 +219,7 @@ preprocess_snv_data <- function(rds_obj = NULL, snv_file = NULL,
   srt[["HasSNV"]] <- sapply(srt[["SNVCount"]][, 1], function(x) if (x >= th_reads) 1 else 0)
 
 
-generate_statistics_fnction <- function(snv,th.snv.cells=th_snv_cells){
+generate_statistics_fnction <- function(snv, th.snv.cells=th_snv_cells, th.reads=th_reads){
     
     snv <- snv[!is.na(snv$VAF), ]
     # filter based on `X.BadRead` and `SNVCount`
@@ -230,7 +230,7 @@ generate_statistics_fnction <- function(snv,th.snv.cells=th_snv_cells){
                                function(x) 100 * sum(x) / length(x))
     snv.read.filt <- snv.read.filt[snv.read.filt$BadReadFlag <= th.snv.cells, ]
     snv <- merge(snv, snv.read.filt, by = c("CHROM", "POS", "REF", "ALT"))
-    snv$VAF[snv$SNVCount < th_reads] <- 0
+    snv$VAF[snv$SNVCount < th.reads] <- 0
     if (nrow(snv) == 0) {
       stop("There are no rows left after filtering. You may need to reset your threshold parameters.")
     }
@@ -280,7 +280,7 @@ generate_statistics_fnction <- function(snv,th.snv.cells=th_snv_cells){
       for (i in 1:length(unique(srt$orig.ident))){
         snv$sampleid = data.frame(do.call('rbind',strsplit(as.character(snv$ReadGroup),'_',fixed=TRUE)))$X1
         snv_input = snv[snv$sampleid == unique(srt$orig.ident)[i],]
-        df.final <- generate_statistics_fnction(snv=snv_input)
+        df.final <- generate_statistics_fnction(snv=snv, th.snv.cells=th_snv_cells, th.reads=th_reads)
         df.export <- df.final
         write.table(df.final, file = file.path(
         output_dir, paste0("SNV_Statistics_",unique(srt$orig.ident)[i],".txt")), sep = "\t", row.names = F)
@@ -289,7 +289,7 @@ generate_statistics_fnction <- function(snv,th.snv.cells=th_snv_cells){
         output_dir, paste0("Significant_SNVs_",unique(srt$orig.ident)[i],".txt")), sep = "\t", row.names = F)
       }
     } else {
-      df.final <- generate_statistics_fnction(snv)
+      df.final <- generate_statistics_fnction(snv, th.snv.cells=th_snv_cells, th.reads=th_reads)
       df.export <- df.final
       write.table(df.final, file = file.path(
       output_dir, "SNV_Statistics.txt"), sep = "\t", row.names = F)
@@ -302,7 +302,7 @@ generate_statistics_fnction <- function(snv,th.snv.cells=th_snv_cells){
   # run scType analysis if requested
   if (enable_sctype) {
     cat("Running scType...\n")
-    db_url <- "https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_full.xlsx"
+    db_url = "/data/lab/smart/projects/wz_dgemm/make_sctype_gene_list/ScTypeDB_mm10_intestine_20250115.xlsx";
     source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
     source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_score_.R")
     gs_list <- tryCatch({
