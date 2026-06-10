@@ -58,8 +58,8 @@ single_gene_plot <- function(seurat_object, processed_snv, gene_of_choice, outpu
   colnames(df.dim) <- c("x", "y", "z")
   df.snv <- processed_snv
   df.snv <- df.snv[c("CHROM", "POS", "REF", "ALT", "ReadGroup",
-                     "SNVCount", "RefCount", "VAF", 'Gene.refGene')]
-  gene_options <- paste(df.snv$Gene.refGene)
+                     "SNVCount", "RefCount", "VAF", 'GENE')]
+  gene_options <- paste(df.snv$GENE)
   if (gene_of_choice %in% gene_options) {
   gene_options <- gene_of_choice
   } else {
@@ -87,7 +87,7 @@ single_gene_plot <- function(seurat_object, processed_snv, gene_of_choice, outpu
 
 
   generate_gene_plots <- function(selected_gene, title_color = "blue", dynamic_cell_size = F) {
-    df_subset <- df.snv[df.snv$Gene.refGene == selected_gene, ]
+    df_subset <- df.snv[df.snv$GENE == selected_gene, ]
 
     vaf <- df_subset$VAF[match(colnames(seurat_object), df_subset$ReadGroup)]
     snv_reads <- df_subset$SNVCount[match(colnames(seurat_object), df_subset$ReadGroup)]
