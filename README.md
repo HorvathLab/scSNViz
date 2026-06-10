@@ -151,6 +151,21 @@ one_snv_plot <- single_snv_plot(
 
 ```
 
+#### Plot all SNVs for a single gene
+If using labeled data with gene symbol annotations in the 'GENE' column of the SNV (e.g. sample1_SNVs_large.tsv has gene annotations in the column 'GENE'), the following function may be run to plot the N_REF, N_VAR, and VAF for all SNVs contained within a single cell.
+```
+one_gene_plot <- single_gene_plot(
+    seurat_object=processed_data$SeuratObject,
+    processed_snv=processed_data$ProcessedSNV,
+    gene_of_choice=gene,
+    output_dir=paste0('output/', 'S1PR1'),
+    slingshot=TRUE,
+    dimensionality_reduction='UMAP',
+    dynamic_cell_size=FALSE,
+    save_each_plot=TRUE
+    )
+```
+
 #### Generate exploratory combined plots report
 ```
 generate_report(plot_object=plots,
