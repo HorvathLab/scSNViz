@@ -17,6 +17,7 @@
 #' @param dynamic_cell_size Logical; whether to scale cell size dynamically based on SNV and reference read counts. Default: FALSE.
 #' @param save_each_plot Logical; whether to save each plot individually. Default: FALSE.
 #' @param enable_integrated Logical; whether to use an integrated Seurat object. Default: FALSE.
+#' @param gridlines Logical; whether to include gridlines in the plots. Default: TRUE.
 #' @return A list containing JSON content for VAF, N_VAR, and N_REF plots.
 #' @details
 #' This function generates individual SNV plots using processed SNV data (processed_snv) and the dimensionality
@@ -43,7 +44,8 @@
 #' @export
 #'
 individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_dir = NULL, slingshot = T,
-                                 dimensionality_reduction = "UMAP", dynamic_cell_size = F, save_each_plot = F, enable_integrated = F) {
+                                 dimensionality_reduction = "UMAP", dynamic_cell_size = F, save_each_plot = F, enable_integrated = F,
+                                 gridlines = T) {
 
 
   #OS checking
@@ -79,13 +81,13 @@ individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_
   
   # Ordering fix
   varients <- snv_options
-  split_vars <- strsplit(variants, ":")
+  split_vars <- strsplit(varients, ":")
   chrs_raw <- sapply(split_vars, `[`, 1)
   pos <- as.numeric(sapply(split_vars, `[`, 2))
   chr_order <- c(as.character(1:22), "X", "Y", "x", "y")
   chrs_factor <- factor(chrs_raw, levels = chr_order)
   sort_index <- order(chrs_factor, pos)
-  snv_options <- variants[sort_index]
+  snv_options <- varients[sort_index]
 
   individual_SNV_html <- NULL
   curves <- NULL
@@ -360,6 +362,27 @@ individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_
   ind_snv_out[["snv_options"]] <- snv_options
 
   cat("\nIndividual SNV plots saved.\n")
+
+  if (!gridlines){
+
+  no_axis <- list(
+  showgrid = FALSE,
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = FALSE,
+  showspikes = FALSE,
+  title = "",
+  backgroundcolor = "rgba(0,0,0,0)",
+  showbackground = FALSE)
+
+  for (i in seq_along(ind_snv_out[["plots_json"]])){
+  parsed <- jsonlite::fromJSON(ind_snv_out[["plots_json"]][[i]]$json, simplifyVector = FALSE)
+  parsed$layout$scene$xaxis <- no_axis
+  parsed$layout$scene$yaxis <- no_axis
+  parsed$layout$scene$zaxis <- no_axis
+  ind_snv_out[["plots_json"]][[i]]$json <- jsonlite::toJSON(parsed, auto_unbox = TRUE)
+    }
+  }
 
   return(ind_snv_out)
 

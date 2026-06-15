@@ -13,7 +13,8 @@ individual_snv_plots(
   dimensionality_reduction = "UMAP",
   dynamic_cell_size = F,
   save_each_plot = F,
-  enable_integrated = F
+  enable_integrated = F,
+  gridlines = T
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ individual_snv_plots(
 \item{save_each_plot}{Logical; whether to save each plot individually. Default: FALSE.}
 
 \item{enable_integrated}{Logical; whether to use an integrated Seurat object. Default: FALSE.}
+
+\item{gridlines}{Logical; whether to include gridlines in the plots. Default: TRUE.}
 }
 \value{
 A list containing JSON content for VAF, N_VAR, and N_REF plots.

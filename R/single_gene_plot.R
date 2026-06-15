@@ -16,6 +16,7 @@
 #' @param dimensionality_reduction Dimensionality reduction method ('UMAP', 'PCA', 'tSNE'). Default: "UMAP".
 #' @param dynamic_cell_size Logical; whether to scale cell size dynamically based on SNV and reference read counts. Default: FALSE.
 #' @param save_each_plot Logical; whether to save each plot individually. Default: FALSE.
+#' @param gridlines Logical; whether to include gridlines in the plots. Default: TRUE.
 #' @return A list containing JSON content for VAF, N_VAR, and N_REF plots.
 #' @details
 #' This function generates an individual SNV plot using processed SNV data (processed_snv) and the dimensionality
@@ -42,7 +43,8 @@
 #' @export
 #'
 single_gene_plot <- function(seurat_object, processed_snv, gene_of_choice, output_dir = NULL, slingshot = T,
-                                 dimensionality_reduction = "UMAP", dynamic_cell_size = F, save_each_plot = F) {
+                                 dimensionality_reduction = "UMAP", dynamic_cell_size = F, save_each_plot = F,
+                                 gridlines = T) {
 
   cat("\nGenerating individual gene SNVs plot...\n")
 
@@ -265,6 +267,27 @@ single_gene_plot <- function(seurat_object, processed_snv, gene_of_choice, outpu
   ind_snv_out[["gene_options"]] <- gene_options
 
   cat("\nIndividual gene SNVs plots saved.\n")
+
+  if (!gridlines){
+    
+  no_axis <- list(
+  showgrid = FALSE,
+  zeroline = FALSE,
+  showline = FALSE,
+  showticklabels = FALSE,
+  showspikes = FALSE,
+  title = "",
+  backgroundcolor = "rgba(0,0,0,0)",
+  showbackground = FALSE)
+
+  for (i in seq_along(ind_snv_out[["plots_json"]])){
+  parsed <- jsonlite::fromJSON(ind_snv_out[["plots_json"]][[i]]$json, simplifyVector = FALSE)
+  parsed$layout$scene$xaxis <- no_axis
+  parsed$layout$scene$yaxis <- no_axis
+  parsed$layout$scene$zaxis <- no_axis
+  ind_snv_out[["plots_json"]][[i]]$json <- jsonlite::toJSON(parsed, auto_unbox = TRUE)
+    }
+  }
 
   return(ind_snv_out)
 

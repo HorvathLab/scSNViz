@@ -302,7 +302,7 @@ generate_statistics_fnction <- function(snv, th.snv.cells=th_snv_cells, th.reads
   # run scType analysis if requested
   if (enable_sctype) {
     cat("Running scType...\n")
-    db_url = "/data/lab/smart/projects/wz_dgemm/make_sctype_gene_list/ScTypeDB_mm10_intestine_20250115.xlsx";
+    db_url = "https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/ScTypeDB_full.xlsx";
     source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/gene_sets_prepare.R")
     source("https://raw.githubusercontent.com/IanevskiAleksandr/sc-type/master/R/sctype_score_.R")
     gs_list <- tryCatch({

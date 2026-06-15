@@ -12,7 +12,8 @@ single_snv_plot(
   slingshot = T,
   dimensionality_reduction = "UMAP",
   dynamic_cell_size = F,
-  save_each_plot = F
+  save_each_plot = F,
+  gridlines = T
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ single_snv_plot(
 \item{dynamic_cell_size}{Logical; whether to scale cell size dynamically based on SNV and reference read counts. Default: FALSE.}
 
 \item{save_each_plot}{Logical; whether to save each plot individually. Default: FALSE.}
+
+\item{gridlines}{Logical; whether to include gridlines in the plots. Default: TRUE.}
 }
 \value{
 A list containing JSON content for VAF, N_VAR, and N_REF plots.
