@@ -8,6 +8,7 @@ single_snv_plot(
   seurat_object,
   processed_snv,
   snv_of_choice = "CHROM:POS:REF:ALT",
+  snv_list_of_choice = NULL,
   output_dir = NULL,
   slingshot = T,
   dimensionality_reduction = "UMAP",
@@ -21,7 +22,9 @@ single_snv_plot(
 
 \item{processed_snv}{Data frame of processed SNV information, typically output from the preprocess_snv_data function.}
 
-\item{snv_of_choice}{Selected snv}
+\item{snv_of_choice}{Selected single snv of interest Default: "CHROM:POS:REF:ALT"}
+
+\item{snv_list_of_choice}{list of snvs of interest. Default: NULL}
 
 \item{output_dir}{Directory to save plots and HTML (if save_each_plot is TRUE).}
 

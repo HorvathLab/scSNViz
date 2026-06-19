@@ -10,7 +10,8 @@
 #'
 #' @param seurat_object Processed Seurat object.
 #' @param processed_snv Data frame of processed SNV information, typically output from the preprocess_snv_data function.
-#' @param snv_of_choice Selected snv
+#' @param snv_of_choice Selected single snv of interest Default: "CHROM:POS:REF:ALT"
+#' @param snv_list_of_choice list of snvs of interest. Default: NULL
 #' @param output_dir Directory to save plots and HTML (if save_each_plot is TRUE).
 #' @param slingshot Logical; whether to include slingshot trajectories. Default: TRUE.
 #' @param dimensionality_reduction Dimensionality reduction method ('UMAP', 'PCA', 'tSNE'). Default: "UMAP".
@@ -42,7 +43,7 @@
 #'
 #' @export
 #'
-single_snv_plot <- function(seurat_object, processed_snv, snv_of_choice = "CHROM:POS:REF:ALT", output_dir = NULL, slingshot = T,
+single_snv_plot <- function(seurat_object, processed_snv, snv_of_choice = "CHROM:POS:REF:ALT", snv_list_of_choice = NULL, output_dir = NULL, slingshot = T,
                                  dimensionality_reduction = "UMAP", dynamic_cell_size = F, save_each_plot = F, gridlines = T) {
 
   cat("\nGenerating individual SNV plot...\n")
@@ -50,12 +51,6 @@ single_snv_plot <- function(seurat_object, processed_snv, snv_of_choice = "CHROM
   is_valid_snv <- function(input) {
   pattern <- "^[0-9XY]+:[0-9]+:[ACGT]+:[ACGT]+$"
   return(grepl(pattern, input))
-  }
-
-  if (snv_of_choice == "CHROM:POS:REF:ALT"){
-    stop("Input your snv of choice with the following format CHR:POS:REF:ALT. Currently input set to default.")
-  } else if (!is_valid_snv(snv_of_choice)){
-    stop("SNV not in valid format CHROM:POS:REF:ALT. Example: 1:155169447:C:T")
   }
 
   valid_reductions <- c("umap", "pca", "tsne")
@@ -73,12 +68,38 @@ single_snv_plot <- function(seurat_object, processed_snv, snv_of_choice = "CHROM
                      "SNVCount", "RefCount", "VAF")]
   snvs <- unique(df.snv[c("CHROM", "POS", "REF", "ALT")])
   snv_options <- paste(snvs$CHROM, snvs$POS, snvs$REF, snvs$ALT, sep = ":")
-  if (snv_of_choice %in% snv_options) {
-  snv_options <- snv_of_choice
-  } else {
-        stop("SNV not present")
-    } 
 
+  ## case of single input and list
+  if (snv_of_choice != "CHROM:POS:REF:ALT" && !is.null(snv_list_of_choice)){
+    stop("Input either a list to snv_list_of_choice or a single SNV to snv_of_choice")
+  }
+
+  if (snv_of_choice == "CHROM:POS:REF:ALT" && is.null(snv_list_of_choice)){
+    stop("Input your snv of choice with the following format CHR:POS:REF:ALT. Currently input set to default.")
+  } else if (is.null(snv_list_of_choice)){
+    if (!is_valid_snv(snv_of_choice)){
+      stop("SNV not in valid format CHROM:POS:REF:ALT. Example: 1:155169447:C:T")
+    }
+        if (snv_of_choice %in% snv_options) {
+          snv_options <- snv_of_choice
+        } else {
+          stop("SNV not present in processed_snv")
+        }
+    }
+
+  if (!is.null(snv_list_of_choice) && !is.list(snv_list_of_choice)){
+    stop("snv_list_of_choice not a list. Ensure this is a list.")
+  } else if (!is.null(snv_list_of_choice) && is.list(snv_list_of_choice)){
+    for (i in snv_list_of_choice){
+      if(!is_valid_snv(i)){
+        stop("SNV ", i, " not in valid format CHROM:POS:REF:ALT. Example: 1:155169447:C:T")
+      }
+      if (!(i %in% snv_options)){
+        stop(i, " not present in processed_snv. No data available.")
+      } 
+    }
+    snv_options <- snv_list_of_choice
+  } 
 
 
   individual_SNV_html <- NULL
