@@ -1,4 +1,4 @@
-#' Single SNV Plot
+#' Single Gene, All SNVs Plot
 #'
 #' This function generates individual SNV plots for VAF, N_VAR, and N_REF. It uses processed SNV data
 #' and a Seurat object to create plots with options for saving and including slingshot trajectories.
@@ -10,8 +10,7 @@
 #'
 #' @param seurat_object Processed Seurat object.
 #' @param processed_snv Data frame of processed SNV information, typically output from the preprocess_snv_data function.
-#' @param snv_of_choice Selected single snv of interest Default: "CHROM:POS:REF:ALT"
-#' @param snv_list_of_choice list of snvs of interest. Default: NULL
+#' @param gene_of_choice Selected gene
 #' @param output_dir Directory to save plots and HTML (if save_each_plot is TRUE).
 #' @param slingshot Logical; whether to include slingshot trajectories. Default: TRUE.
 #' @param dimensionality_reduction Dimensionality reduction method ('UMAP', 'PCA', 'tSNE'). Default: "UMAP".
@@ -29,29 +28,25 @@
 #' @examples
 #' # Example usage:
 #' \dontrun{
-#' one_snv_plot <- single_snv_plot(
-#'                   seurat_object = processed_data$SeuratObject,
-#'                   processed_snv = processed_data$ProcessedSNV,
-#'                   snv_of_choice = "1:155169447:C:T",
-#'                   output_dir = "output/individual_plots",
-#'                   slingshot = T,
-#'                   dimensionality_reduction = "UMAP",
-#'                   dynamic_cell_size = F,
-#'                   save_each_plot = T
-#'               )
-#'             }
+#' single_gene_plot <- single_gene_plot(
+#'        seurat_object=processed_data$SeuratObject,
+#'        processed_snv=processed_data$ProcessedSNV,
+#'        gene_of_choice=gene,
+#'        output_dir=paste0('output/',gene),
+#'        slingshot=TRUE,
+#'        dimensionality_reduction='UMAP',
+#'        dynamic_cell_size=FALSE,
+#'        save_each_plot=TRUE
+#'        )
+#'        }
 #'
 #' @export
 #'
-single_snv_plot <- function(seurat_object, processed_snv, snv_of_choice = "CHROM:POS:REF:ALT", snv_list_of_choice = NULL, output_dir = NULL, slingshot = T,
-                                 dimensionality_reduction = "UMAP", dynamic_cell_size = F, save_each_plot = F, gridlines = T) {
+single_gene_plot <- function(seurat_object, processed_snv, gene_of_choice, output_dir = NULL, slingshot = T,
+                                 dimensionality_reduction = "UMAP", dynamic_cell_size = F, save_each_plot = F,
+                                 gridlines = T) {
 
-  cat("\nGenerating individual SNV plot...\n")
-
-  is_valid_snv <- function(input) {
-  pattern <- "^[0-9XY]+:[0-9]+:[ACGT]+:[ACGT]+$"
-  return(grepl(pattern, input))
-  }
+  cat("\nGenerating individual gene SNVs plot...\n")
 
   valid_reductions <- c("umap", "pca", "tsne")
   dimensionality_reduction <- tolower(dimensionality_reduction)
@@ -65,44 +60,17 @@ single_snv_plot <- function(seurat_object, processed_snv, snv_of_choice = "CHROM
   colnames(df.dim) <- c("x", "y", "z")
   df.snv <- processed_snv
   df.snv <- df.snv[c("CHROM", "POS", "REF", "ALT", "ReadGroup",
-                     "SNVCount", "RefCount", "VAF")]
-  snvs <- unique(df.snv[c("CHROM", "POS", "REF", "ALT")])
-  snv_options <- paste(snvs$CHROM, snvs$POS, snvs$REF, snvs$ALT, sep = ":")
-
-  ## case of single input and list
-  if (snv_of_choice != "CHROM:POS:REF:ALT" && !is.null(snv_list_of_choice)){
-    stop("Input either a list to snv_list_of_choice or a single SNV to snv_of_choice")
-  }
-
-  if (snv_of_choice == "CHROM:POS:REF:ALT" && is.null(snv_list_of_choice)){
-    stop("Input your snv of choice with the following format CHR:POS:REF:ALT. Currently input set to default.")
-  } else if (is.null(snv_list_of_choice)){
-    if (!is_valid_snv(snv_of_choice)){
-      stop("SNV not in valid format CHROM:POS:REF:ALT. Example: 1:155169447:C:T")
-    }
-        if (snv_of_choice %in% snv_options) {
-          snv_options <- snv_of_choice
-        } else {
-          stop("SNV not present in processed_snv")
-        }
+                     "SNVCount", "RefCount", "VAF", 'GENE')]
+  gene_options <- paste(df.snv$GENE)
+  if (gene_of_choice %in% gene_options) {
+  gene_options <- gene_of_choice
+  } else {
+        stop("gene not present")
     }
 
-  if (!is.null(snv_list_of_choice) && !is.list(snv_list_of_choice)){
-    stop("snv_list_of_choice not a list. Ensure this is a list.")
-  } else if (!is.null(snv_list_of_choice) && is.list(snv_list_of_choice)){
-    for (i in snv_list_of_choice){
-      if(!is_valid_snv(i)){
-        stop("SNV ", i, " not in valid format CHROM:POS:REF:ALT. Example: 1:155169447:C:T")
-      }
-      if (!(i %in% snv_options)){
-        stop(i, " not present in processed_snv. No data available.")
-      } 
-    }
-    snv_options <- snv_list_of_choice
-  } 
 
 
-  individual_SNV_html <- NULL
+  individual_gene_html <- NULL
   curves <- NULL
 
   if (slingshot) {
@@ -120,12 +88,8 @@ single_snv_plot <- function(seurat_object, processed_snv, snv_of_choice = "CHROM
   }
 
 
-  generate_snv_plots <- function(selected_snv, title_color = "blue", dynamic_cell_size = F) {
-    selected_parts <- unlist(strsplit(selected_snv, ":"))
-    df_subset <- df.snv[df.snv$CHROM == selected_parts[1] &
-                          df.snv$POS == as.numeric(selected_parts[2]) &
-                          df.snv$REF ==selected_parts[3] &
-                          df.snv$ALT == selected_parts[4], ]
+  generate_gene_plots <- function(selected_gene, title_color = "blue", dynamic_cell_size = F) {
+    df_subset <- df.snv[df.snv$GENE == selected_gene, ]
 
     vaf <- df_subset$VAF[match(colnames(seurat_object), df_subset$ReadGroup)]
     snv_reads <- df_subset$SNVCount[match(colnames(seurat_object), df_subset$ReadGroup)]
@@ -252,19 +216,19 @@ single_snv_plot <- function(seurat_object, processed_snv, snv_of_choice = "CHROM
 
 
   # function to save plots' json
-  plots_json <- lapply(snv_options, function(snv) {
-    plots <- generate_snv_plots(snv, title_color = 'blue')
+  plots_json <- lapply(gene_options, function(gene) {
+    plots <- generate_gene_plots(gene, title_color = 'blue')
     list(
       VAF = list(
-        id = paste0("plot_VAF_", gsub(":", "_", snv)),
+        id = paste0("plot_VAF_", gene),
         json = plotly::plotly_json(plots[['VAF']], jsonedit = F)
       ),
       N_VAR = list(
-        id = paste0("plot_N_VAR_", gsub(":", "_", snv)),
+        id = paste0("plot_N_VAR_", gene),
         json = plotly::plotly_json(plots[['N_VAR']], jsonedit = F)
       ),
       N_REF = list(
-        id = paste0("plot_N_REF_", gsub(":", "_", snv)),
+        id = paste0("plot_N_REF_", gene),
         json = plotly::plotly_json(plots[['N_REF']], jsonedit = F)
       )
     )}
@@ -274,41 +238,38 @@ single_snv_plot <- function(seurat_object, processed_snv, snv_of_choice = "CHROM
 
 
   if (save_each_plot && !is.null(output_dir)) {
-    save_snv_plot <- function(plot, snv, plot_type) {
-      snv_clean <- gsub(":", "_", snv)
+    save_snv_plot <- function(plot, selected_gene, plot_type) {
       file_path <- file.path(
         output_dir,
-        plot_type, paste0(plot_type, "_", snv_clean, ".html")
+        plot_type, paste0(plot_type, "_", gene, ".html")
       )
       dir.create(dirname(file_path), showWarnings = F, recursive = T)
 
-      snv_parts <- unlist(strsplit(snv, ":"))
-      snv_title_format <- paste0(snv_parts[1], ":", snv_parts[2],
-                                 " ", snv_parts[3], ">", snv_parts[4])
+      gene_title_format <- selected_gene
       plot <- plot %>% layout(
-        title = list(text = paste(plot_type, "<br>", snv_title_format),
+        title = list(text = paste(plot_type, "<br>", gene_title_format),
                      font = list(color = "black")), margin = list(t = 50)
       )
 
       suppressWarnings(saveWidget(as_widget(plot), file = file_path, selfcontained = F, libdir = "lib"))
     }
 
-    for (snv in snv_options) {
-      plots <- generate_snv_plots(snv, title_color = "black")
-      save_snv_plot(plots[["VAF"]], snv, "VAF")
-      save_snv_plot(plots[['N_VAR']], snv, "N_VAR")
-      save_snv_plot(plots[['N_REF']], snv, "N_REF")
-    }
+   for (gene in gene_options) {
+     plots <- generate_gene_plots(selected_gene = gene, title_color = "black")
+     save_snv_plot(plots[["VAF"]], gene, "VAF")
+     save_snv_plot(plots[['N_VAR']], gene, "N_VAR")
+     save_snv_plot(plots[['N_REF']], gene, "N_REF")
+   }
   }
 
   ind_snv_out <- list()
   ind_snv_out[["plots_json"]] <- plots_json
-  ind_snv_out[["snv_options"]] <- snv_options
+  ind_snv_out[["gene_options"]] <- gene_options
 
-  cat("\nIndividual SNV plots saved.\n")
+  cat("\nIndividual gene SNVs plots saved.\n")
 
   if (!gridlines){
-
+    
   no_axis <- list(
   showgrid = FALSE,
   zeroline = FALSE,
