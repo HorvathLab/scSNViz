@@ -137,13 +137,11 @@ ind_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
 <img src='https://github.com/HorvathLab/scSNViz/blob/0fc797784b905b29c744968114a5e2192de213b2/docs/individual_snv_plots.png'>
 
 #### Plot individual SNV
-This function allows you to pass either a single SNV of interest as a text string. Or a list of SNVs of interest. Lists should contain SNV of interest in double quotes.
 ```
 one_snv_plot <- single_snv_plot(
        seurat_object=processed_data$SeuratObject,
        processed_snv=processed_data$ProcessedSNV,
        snv_of_choice='1:155169447:C:T',
-       snv_list_of_choice = NULL,
        output_dir='output/1_155169447_C_T',
        slingshot=TRUE,
        dimensionality_reduction='UMAP',
@@ -151,21 +149,6 @@ one_snv_plot <- single_snv_plot(
        save_each_plot=TRUE
      )
 
-```
-
-#### Plot all SNVs for a single gene
-If using labeled data with gene symbol annotations in the 'GENE' column of the SNV (e.g. sample1_SNVs_large.tsv has gene annotations in the column 'GENE'), the following function may be run to plot the N_REF, N_VAR, and VAF for all SNVs contained within a single cell.
-```
-one_gene_plot <- single_gene_plot(
-    seurat_object=processed_data$SeuratObject,
-    processed_snv=processed_data$ProcessedSNV,
-    gene_of_choice=gene,
-    output_dir=paste0('output/', 'S1PR1'),
-    slingshot=TRUE,
-    dimensionality_reduction='UMAP',
-    dynamic_cell_size=FALSE,
-    save_each_plot=TRUE
-    )
 ```
 
 #### Generate exploratory combined plots report
@@ -302,7 +285,7 @@ generate_report(plot_object=plots,
 <img src='https://github.com/HorvathLab/scSNViz/blob/dev/docs/integrated_output_example.png'>
 
 #### Contact Information
-Please contact Siera Martinez (siera.martinez@gwu.edu) with any questions.
+Please contact Siera Martinez (siera.martinez@gwu.edu) or Luke Johnson (luke.johnson@gwu.edu) with any questions.
 
 #### Copyright and licensing
 Code copyright 2024 scSNViz https://github.com/HorvathLab/scSNViz/blob/main/LICENSE.md

@@ -31,7 +31,6 @@
 #' @param disable_3d_axis Logical; whether to disable 3D axis labels. Default: FALSE.
 #' @param save_each_plot Logical; whether to save each plot individually. Default: FALSE.
 #' @param enable_integrated Logical; whether to use an integrated Seurat object. Default: FALSE.
-#' @param gridlines Logical; whether to include gridlines in the plots. Default: TRUE.
 #' @return A list of generated plots.
 #' @details
 #' The function generates various visualizations for SNV data in the 'plots' object, including:
@@ -59,8 +58,7 @@
 #'                        slingshot = TRUE,
 #'                        color_scale = "YlOrRd",
 #'                        cell_border = 0,
-#'                        save_each_plot = TRUE,
-#'                        gridlines = TRUE)
+#'                        save_each_plot = TRUE)
 #' }
 #'
 #' # Access individual plots:
@@ -75,7 +73,7 @@ plot_snv_data <- function(seurat_object, processed_snv, aggregated_snv, plot_dat
                           include_histograms = T, include_cell_types = F, include_snv_dim_red = T,
                           include_copykat = F, dimensionality_reduction = "UMAP", slingshot = T,
                           color_scale = "YlOrRd", cell_border = 0, disable_3d_axis = F, save_each_plot = F,
-                          gridlines = T, enable_integrated = F) {
+                          enable_integrated = F) {
 
   cat("\nGenerating SNV data plots...\n")
 
@@ -664,29 +662,5 @@ plots <- c(plots, new_plots)
         selfcontained = F, libdir = "lib")
     }
   }
-  if (!gridlines) {
-    no_axis <- list(
-    showgrid = FALSE,
-    zeroline = FALSE,
-    showline = FALSE,
-    showticklabels = FALSE,
-    showspikes = FALSE,
-    title = "",
-    backgroundcolor = "rgba(0,0,0,0)",
-    showbackground = FALSE)
-
-    for (name in names(plots)){
-      if (inherits(plots[[name]], "plotly")){
-        plots[[name]] <- plotly::layout(plots[[name]],
-          scene = list(
-            xaxis = no_axis,
-            yaxis = no_axis,
-            zaxis = no_axis
-          )
-        )
-      }
-    }
-  }
-
   return(plots)
 }

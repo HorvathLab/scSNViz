@@ -8,13 +8,11 @@ single_snv_plot(
   seurat_object,
   processed_snv,
   snv_of_choice = "CHROM:POS:REF:ALT",
-  snv_list_of_choice = NULL,
   output_dir = NULL,
   slingshot = T,
   dimensionality_reduction = "UMAP",
   dynamic_cell_size = F,
-  save_each_plot = F,
-  gridlines = T
+  save_each_plot = F
 )
 }
 \arguments{
@@ -22,9 +20,7 @@ single_snv_plot(
 
 \item{processed_snv}{Data frame of processed SNV information, typically output from the preprocess_snv_data function.}
 
-\item{snv_of_choice}{Selected single snv of interest Default: "CHROM:POS:REF:ALT"}
-
-\item{snv_list_of_choice}{list of snvs of interest. Default: NULL}
+\item{snv_of_choice}{Selected snv}
 
 \item{output_dir}{Directory to save plots and HTML (if save_each_plot is TRUE).}
 
@@ -35,8 +31,6 @@ single_snv_plot(
 \item{dynamic_cell_size}{Logical; whether to scale cell size dynamically based on SNV and reference read counts. Default: FALSE.}
 
 \item{save_each_plot}{Logical; whether to save each plot individually. Default: FALSE.}
-
-\item{gridlines}{Logical; whether to include gridlines in the plots. Default: TRUE.}
 }
 \value{
 A list containing JSON content for VAF, N_VAR, and N_REF plots.

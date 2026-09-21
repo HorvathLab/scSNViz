@@ -20,7 +20,6 @@ plot_snv_data(
   cell_border = 0,
   disable_3d_axis = F,
   save_each_plot = F,
-  gridlines = T,
   enable_integrated = F
 )
 }
@@ -54,8 +53,6 @@ plot_snv_data(
 \item{disable_3d_axis}{Logical; whether to disable 3D axis labels. Default: FALSE.}
 
 \item{save_each_plot}{Logical; whether to save each plot individually. Default: FALSE.}
-
-\item{gridlines}{Logical; whether to include gridlines in the plots. Default: TRUE.}
 
 \item{enable_integrated}{Logical; whether to use an integrated Seurat object. Default: FALSE.}
 }
@@ -93,8 +90,7 @@ plots <- plot_snv_data(seurat_object = processed_data$SeuratObject,
                        slingshot = TRUE,
                        color_scale = "YlOrRd",
                        cell_border = 0,
-                       save_each_plot = TRUE,
-                       gridlines = TRUE)
+                       save_each_plot = TRUE)
 }
 
 # Access individual plots:
