@@ -153,21 +153,6 @@ one_snv_plot <- single_snv_plot(
 
 ```
 
-#### Plot all SNVs for a single gene
-If using labeled data with gene symbol annotations in the 'GENE' column of the SNV (e.g. sample1_SNVs_large.tsv has gene annotations in the column 'GENE'), the following function may be run to plot the N_REF, N_VAR, and VAF for all SNVs contained within a single cell.
-```
-one_gene_plot <- single_gene_plot(
-    seurat_object=processed_data$SeuratObject,
-    processed_snv=processed_data$ProcessedSNV,
-    gene_of_choice=gene,
-    output_dir=paste0('output/', 'S1PR1'),
-    slingshot=TRUE,
-    dimensionality_reduction='UMAP',
-    dynamic_cell_size=FALSE,
-    save_each_plot=TRUE
-    )
-```
-
 #### Generate exploratory combined plots report
 ```
 generate_report(plot_object=plots,
@@ -175,7 +160,6 @@ generate_report(plot_object=plots,
                 hide_ind_plots=TRUE, # Set this to FALSE in order to see plots for each individual SNV.
                 output_dir=output_dir)
 ```
-
 
 <img src='https://github.com/HorvathLab/scSNViz/blob/dev/docs/Exploratory_combined_plots.png'>
 
@@ -187,6 +171,22 @@ generate_report(plot_object=plots,
                 hide_ind_plots=FALSE,
                 output_dir=output_dir)
 ```
+
+#### Plot all SNVs for a single gene
+If using labeled data with gene symbol annotations in the 'GENE' column of the SNV (e.g. sample1_SNVs_large.tsv has gene annotations in the column 'GENE'), the following function may be run to plot the N_REF, N_VAR, and VAF for all SNVs contained within a single cell.
+```
+one_gene_plot <- single_gene_plot(
+    seurat_object=processed_data$SeuratObject,
+    processed_snv=processed_data$ProcessedSNV,
+    gene_of_choice='LAMPOR5',
+    output_dir=paste0(output_dir, gene_of_choice),
+    slingshot=TRUE,
+    dimensionality_reduction='UMAP',
+    dynamic_cell_size=FALSE,
+    save_each_plot=TRUE
+    )
+```
+
 #### Generate Transposed SNV plot (with or without labels)
 
 In order to generate a transposed SNV plot, you must have a minimum of 100 unique SNVs in your SNV file. To run the tutorial with sample data, please re-run the above workflow for an individual sample, but using the 'input/sample1_SNVs_large.tsv' file. Once you have generated the processed_data variable, plot_snv_data may be run with the include_snv_dim_red variable set to TRUE.
