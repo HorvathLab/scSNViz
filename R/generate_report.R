@@ -5,7 +5,7 @@
 #' @importFrom htmltools div tags HTML save_html
 #'
 #' @param plot_object The user defined variable object for the function call to generate plots.
-#' @param ind_snv_object The user defined variable object for the function call to generate individual SNV plots.
+#' @param snv_object The user defined variable object for the function call to generate individual SNV plots.
 #' @param hide_ind_plots Logical; whether to hide the individual SNV plots in the combined html output.
 #' @param output_dir Directory where the combined html report will be saved.
 #' @details
@@ -21,7 +21,7 @@
 #' # Example usage:
 #' \dontrun{
 #' generate_report(plot_object = plots,
-#'                ind_snv_object = ind_snv_plots,
+#'                snv_object = ind_snv_plots,
 #'                hide_ind_plots = FALSE,
 #'                output_dir = output_dir)
 #' }
@@ -65,9 +65,9 @@ generate_report <- function(plot_object, snv_object = NULL,
     "Custom 2" = "Custom user graph."
   )
 
-  if(!is.null(ind_snv_object)){
-    snv_options <- ind_snv_object$snv_options
-    plots_json <- ind_snv_object$plots_json
+  if(!is.null(snv_object)){
+    snv_options <- snv_object$snv_options
+    plots_json <- snv_object$plots_json
     individual_SNV_html <- paste0('
         <!DOCTYPE html>
         <html>
