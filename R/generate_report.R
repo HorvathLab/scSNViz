@@ -28,7 +28,7 @@
 #'
 #' @export
 #'
-generate_report <- function(plot_object, ind_snv_object = NULL,
+generate_report <- function(plot_object, snv_object = NULL,
                             hide_ind_plots = T, output_dir = NULL){
 
   if(missing(plot_object)){

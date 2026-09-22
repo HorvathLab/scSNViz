@@ -121,10 +121,10 @@ plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
 
 <img src='https://github.com/HorvathLab/scSNViz/blob/0fc797784b905b29c744968114a5e2192de213b2/docs/sample_outputs.png'>
 
-#### Generate individual SNV plots
+#### Generate plots for Significant SNVs
 ```
 #Individual SNV's plottable capped at 50 unique.
-ind_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
+sig_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
                                       processed_snv=processed_data$ProcessedSNV,
                                       sig_snvs=processed_data$SigSNV,
                                       output_dir=output_dir,
@@ -156,7 +156,7 @@ one_snv_plot <- single_snv_plot(
 #### Generate exploratory combined plots report
 ```
 generate_report(plot_object=plots,
-                ind_snv_object=ind_snv_plots,
+                snv_object=sig_snv_plots, # alternatively one_snv_plot
                 hide_ind_plots=TRUE, # Set this to FALSE in order to see plots for each individual SNV.
                 output_dir=output_dir)
 ```
@@ -280,7 +280,7 @@ plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
 
 #### Generate individual SNV plots
 ```
-ind_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
+sig_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
                                       processed_snv=processed_data$ProcessedSNV,
                                       sig_snvs=processed_data$SigSNV,
                                       output_dir=output_dir,
@@ -294,7 +294,7 @@ ind_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
 #### Generate exploratory combined plots report
 ```
 generate_report(plot_object=plots,
-                ind_snv_object=ind_snv_plots,
+                snv_object=sig_snv_plots,
                 hide_ind_plots=TRUE, # individual plots for each SNV are hidden
                 output_dir=output_dir)
 ```
