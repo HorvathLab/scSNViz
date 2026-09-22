@@ -136,7 +136,7 @@ ind_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
 
 <img src='https://github.com/HorvathLab/scSNViz/blob/0fc797784b905b29c744968114a5e2192de213b2/docs/individual_snv_plots.png'>
 
-#### Plot individual SNV
+#### Plot a single SNV
 This function allows you to pass either a single SNV of interest as a text string. Or a list of SNVs of interest. Lists should contain SNV of interest in double quotes.
 ```
 one_snv_plot <- single_snv_plot(
