@@ -121,7 +121,7 @@ plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
 
 <img src='https://github.com/HorvathLab/scSNViz/blob/0fc797784b905b29c744968114a5e2192de213b2/docs/sample_outputs.png'>
 
-#### Generate plots for Significant SNVs
+#### Generate plots for significant SNVs
 ```
 # Capped at 50 unique SNVs.
 sig_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
@@ -186,7 +186,7 @@ In order to generate a transposed SNV plot, you must have a minimum of 100 uniqu
 
 <img src='https://github.com/HorvathLab/scSNViz/blob/d4bf67d0d2a33897c9e317e84c6e3301dc1a6c03/docs/transposed_snv_plot.png'>
 
-## Workflow for Multiple Samples
+## Workflow for multiple samples
 The following is a workflow that calculates and overlays basic SNV metrics on top of a dimensionality reduction integrated from multiple samples.
 
 #### Prepare integrated data
