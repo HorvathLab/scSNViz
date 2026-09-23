@@ -6,7 +6,7 @@
 \usage{
 generate_report(
   plot_object,
-  ind_snv_object = NULL,
+  snv_object = NULL,
   hide_ind_plots = T,
   output_dir = NULL
 )
@@ -14,7 +14,7 @@ generate_report(
 \arguments{
 \item{plot_object}{The user defined variable object for the function call to generate plots.}
 
-\item{ind_snv_object}{The user defined variable object for the function call to generate individual SNV plots.}
+\item{snv_object}{The user defined variable object for the function call to generate individual SNV plots.}
 
 \item{hide_ind_plots}{Logical; whether to hide the individual SNV plots in the combined html output.}
 
@@ -38,7 +38,7 @@ The output_dir parameter specifies where the plots will be saved if save_each_pl
 # Example usage:
 \dontrun{
 generate_report(plot_object = plots,
-               ind_snv_object = ind_snv_plots,
+               snv_object = ind_snv_plots,
                hide_ind_plots = FALSE,
                output_dir = output_dir)
 }

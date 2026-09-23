@@ -123,7 +123,7 @@ plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
 
 #### Generate plots for Significant SNVs
 ```
-#Individual SNV's plottable capped at 50 unique.
+# Capped at 50 unique SNVs.
 sig_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
                                       processed_snv=processed_data$ProcessedSNV,
                                       sig_snvs=processed_data$SigSNV,
@@ -163,14 +163,6 @@ generate_report(plot_object=plots,
 
 <img src='https://github.com/HorvathLab/scSNViz/blob/dev/docs/Exploratory_combined_plots.png'>
 
-
-#### Generate exploratory combined plot for single SNV of interest
-```
-generate_report(plot_object=plots,
-                ind_snv_object=one_snv_plot,
-                hide_ind_plots=FALSE,
-                output_dir=output_dir)
-```
 
 #### Plot all SNVs for a single gene
 If using labeled data with gene symbol annotations in the 'GENE' column of the SNV (e.g. sample1_SNVs_large.tsv has gene annotations in the column 'GENE'), the following function may be run to plot the N_REF, N_VAR, and VAF for all SNVs contained within a single cell.
