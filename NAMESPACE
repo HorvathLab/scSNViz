@@ -9,64 +9,82 @@ export(single_snv_plot)
 importFrom(HGNChelper,checkGeneSymbols)
 importFrom(Matrix,Matrix)
 importFrom(Rtsne,Rtsne)
-importFrom(Seurat,"DefaultAssay<-")
-importFrom(Seurat,CreateSeuratObject)
-importFrom(Seurat,DefaultAssay)
-importFrom(Seurat,Embeddings)
-importFrom(Seurat,FindClusters)
-importFrom(Seurat,FindNeighbors)
-importFrom(Seurat,GetAssayData)
-importFrom(Seurat,PercentageFeatureSet)
-importFrom(Seurat,RunPCA)
-importFrom(Seurat,RunTSNE)
-importFrom(Seurat,RunUMAP)
-importFrom(Seurat,SCTransform)
-importFrom(Seurat,as.SingleCellExperiment)
-importFrom(SingleCellExperiment,"reducedDims<-")
-importFrom(SingleCellExperiment,reducedDims)
-importFrom(copykat,CNA.MCMC)
-importFrom(copykat,annotateGenes.hg20)
-importFrom(copykat,annotateGenes.mm10)
-importFrom(copykat,baseline.GMM)
-importFrom(copykat,baseline.norm.cl)
-importFrom(copykat,convert.all.bins.hg20)
-importFrom(copykat,copykat)
-importFrom(copykat,heatmap.3)
-importFrom(dplyr,"%>%")
-importFrom(dplyr,arrange)
-importFrom(dplyr,filter)
-importFrom(dplyr,group_by)
-importFrom(dplyr,mutate)
-importFrom(dplyr,top_n)
-importFrom(ggplot2,aes)
-importFrom(ggplot2,after_stat)
-importFrom(ggplot2,element_blank)
-importFrom(ggplot2,element_text)
-importFrom(ggplot2,geom_histogram)
-importFrom(ggplot2,ggplot)
-importFrom(ggplot2,ggsave)
-importFrom(ggplot2,scale_fill_manual)
-importFrom(ggplot2,theme)
-importFrom(ggplot2,theme_minimal)
-importFrom(ggplot2,xlab)
-importFrom(ggplot2,ylab)
-importFrom(htmltools,HTML)
-importFrom(htmltools,div)
-importFrom(htmltools,save_html)
-importFrom(htmltools,tags)
+importFrom(Seurat,
+  "DefaultAssay<-",
+  CreateSeuratObject,
+  DefaultAssay,
+  Embeddings,
+  FindClusters,
+  FindNeighbors,
+  GetAssayData,
+  PercentageFeatureSet,
+  RunPCA,
+  RunTSNE,
+  RunUMAP,
+  SCTransform,
+  as.SingleCellExperiment
+)
+importFrom(SingleCellExperiment,
+  "reducedDims<-",
+  reducedDims
+)
+importFrom(copykat,
+  CNA.MCMC,
+  annotateGenes.hg20,
+  annotateGenes.mm10,
+  baseline.GMM,
+  baseline.norm.cl,
+  convert.all.bins.hg20,
+  copykat,
+  heatmap.3
+)
+importFrom(dplyr,
+  "%>%",
+  arrange,
+  filter,
+  group_by,
+  mutate,
+  top_n
+)
+importFrom(ggplot2,
+  aes,
+  after_stat,
+  element_blank,
+  element_text,
+  geom_histogram,
+  ggplot,
+  ggsave,
+  scale_fill_manual,
+  theme,
+  theme_minimal,
+  xlab,
+  ylab
+)
+importFrom(htmltools,
+  HTML,
+  div,
+  save_html,
+  tags
+)
 importFrom(htmlwidgets,saveWidget)
 importFrom(parallel,mclapply)
-importFrom(plotly,add_markers)
-importFrom(plotly,add_trace)
-importFrom(plotly,as_widget)
-importFrom(plotly,ggplotly)
-importFrom(plotly,layout)
-importFrom(plotly,plot_ly)
-importFrom(plotly,plotly_json)
+importFrom(plotly,
+  add_markers,
+  add_trace,
+  as_widget,
+  ggplotly,
+  layout,
+  plot_ly,
+  plotly_json
+)
 importFrom(randomcoloR,distinctColorPalette)
-importFrom(slingshot,slingCurves)
-importFrom(slingshot,slingshot)
-importFrom(stats,kruskal.test)
-importFrom(stats,p.adjust)
+importFrom(slingshot,
+  slingCurves,
+  slingshot
+)
+importFrom(stats,
+  kruskal.test,
+  p.adjust
+)
 importFrom(stringr,str_to_title)
 importFrom(umap,umap)

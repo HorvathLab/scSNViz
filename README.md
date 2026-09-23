@@ -121,10 +121,10 @@ plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
 
 <img src='https://github.com/HorvathLab/scSNViz/blob/0fc797784b905b29c744968114a5e2192de213b2/docs/sample_outputs.png'>
 
-#### Generate individual SNV plots
+#### Generate plots for significant SNVs
 ```
-#Individual SNV's plottable capped at 50 unique.
-ind_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
+# Capped at 50 unique SNVs.
+sig_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
                                       processed_snv=processed_data$ProcessedSNV,
                                       sig_snvs=processed_data$SigSNV,
                                       output_dir=output_dir,
@@ -136,7 +136,7 @@ ind_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
 
 <img src='https://github.com/HorvathLab/scSNViz/blob/0fc797784b905b29c744968114a5e2192de213b2/docs/individual_snv_plots.png'>
 
-#### Plot individual SNV
+#### Plot a single SNV
 This function allows you to pass either a single SNV of interest as a text string. Or a list of SNVs of interest. Lists should contain SNV of interest in double quotes.
 ```
 one_snv_plot <- single_snv_plot(
@@ -153,14 +153,25 @@ one_snv_plot <- single_snv_plot(
 
 ```
 
+#### Generate exploratory combined plots report
+```
+generate_report(plot_object=plots,
+                snv_object=sig_snv_plots, # alternatively one_snv_plot
+                hide_ind_plots=TRUE, # Set this to FALSE in order to see plots for each individual SNV.
+                output_dir=output_dir)
+```
+
+<img src='https://github.com/HorvathLab/scSNViz/blob/dev/docs/Exploratory_combined_plots.png'>
+
+
 #### Plot all SNVs for a single gene
 If using labeled data with gene symbol annotations in the 'GENE' column of the SNV (e.g. sample1_SNVs_large.tsv has gene annotations in the column 'GENE'), the following function may be run to plot the N_REF, N_VAR, and VAF for all SNVs contained within a single cell.
 ```
 one_gene_plot <- single_gene_plot(
     seurat_object=processed_data$SeuratObject,
     processed_snv=processed_data$ProcessedSNV,
-    gene_of_choice=gene,
-    output_dir=paste0('output/', 'S1PR1'),
+    gene_of_choice='LAMPOR5',
+    output_dir=paste0(output_dir, gene_of_choice),
     slingshot=TRUE,
     dimensionality_reduction='UMAP',
     dynamic_cell_size=FALSE,
@@ -168,25 +179,6 @@ one_gene_plot <- single_gene_plot(
     )
 ```
 
-#### Generate exploratory combined plots report
-```
-generate_report(plot_object=plots,
-                ind_snv_object=ind_snv_plots,
-                hide_ind_plots=TRUE, # Set this to FALSE in order to see plots for each individual SNV.
-                output_dir=output_dir)
-```
-
-
-<img src='https://github.com/HorvathLab/scSNViz/blob/dev/docs/Exploratory_combined_plots.png'>
-
-
-#### Generate exploratory combined plot for single SNV of interest
-```
-generate_report(plot_object=plots,
-                ind_snv_object=one_snv_plot,
-                hide_ind_plots=FALSE,
-                output_dir=output_dir)
-```
 #### Generate Transposed SNV plot (with or without labels)
 
 In order to generate a transposed SNV plot, you must have a minimum of 100 unique SNVs in your SNV file. To run the tutorial with sample data, please re-run the above workflow for an individual sample, but using the 'input/sample1_SNVs_large.tsv' file. Once you have generated the processed_data variable, plot_snv_data may be run with the include_snv_dim_red variable set to TRUE.
@@ -194,7 +186,7 @@ In order to generate a transposed SNV plot, you must have a minimum of 100 uniqu
 
 <img src='https://github.com/HorvathLab/scSNViz/blob/d4bf67d0d2a33897c9e317e84c6e3301dc1a6c03/docs/transposed_snv_plot.png'>
 
-## Workflow for Multiple Samples
+## Workflow for multiple samples
 The following is a workflow that calculates and overlays basic SNV metrics on top of a dimensionality reduction integrated from multiple samples.
 
 #### Prepare integrated data
@@ -280,7 +272,7 @@ plots <- plot_snv_data(seurat_object=processed_data$SeuratObject,
 
 #### Generate individual SNV plots
 ```
-ind_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
+sig_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
                                       processed_snv=processed_data$ProcessedSNV,
                                       sig_snvs=processed_data$SigSNV,
                                       output_dir=output_dir,
@@ -294,15 +286,15 @@ ind_snv_plots <- individual_snv_plots(seurat_object=processed_data$SeuratObject,
 #### Generate exploratory combined plots report
 ```
 generate_report(plot_object=plots,
-                ind_snv_object=ind_snv_plots,
+                snv_object=sig_snv_plots,
                 hide_ind_plots=TRUE, # individual plots for each SNV are hidden
                 output_dir=output_dir)
 ```
 
 <img src='https://github.com/HorvathLab/scSNViz/blob/dev/docs/integrated_output_example.png'>
 
-#### Contact Information
-Please contact Siera Martinez (siera.martinez@gwu.edu) or Luke Johnson (luke.johnson@gwu.edu) with any questions.
+#### Contact
+Siera Martinez (siera.martinez@gwu.edu)
 
 #### Copyright and licensing
 Code copyright 2024 scSNViz https://github.com/HorvathLab/scSNViz/blob/main/LICENSE.md
