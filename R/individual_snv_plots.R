@@ -223,7 +223,7 @@ individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_
                 showscale = F, opacity = 0.5, line = list(color = "#FEE5D9", width = 1)),
                 name = paste0(this.id, " Cells with N_VAR"))   
       }
-      f_varreads <- f_varreads %>% add_trace(data = subset(y, is.na(vaf) & sampleid==this.id),
+      f_varreads <- f_varreads %>% add_trace(data = subset(y, (is.na(vaf)) | (vaf==0) & sampleid==this.id),
                 x = ~x, y = ~y, z = ~z, size = ifelse(dynamic_cell_size,
                 ~((snv_reads + ref_reads) / max(c(snv_reads, ref_reads),
                 na.rm = T)) * 10, 0.05), type = "scatter3d", mode = "markers",
