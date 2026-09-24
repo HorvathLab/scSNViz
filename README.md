@@ -170,8 +170,8 @@ If using labeled data with gene symbol annotations in the 'GENE' column of the S
 one_gene_plot <- single_gene_plot(
     seurat_object=processed_data$SeuratObject,
     processed_snv=processed_data$ProcessedSNV,
-    gene_of_choice='LAMPOR5',
-    output_dir=paste0(output_dir, gene_of_choice),
+    gene_of_choice='LAMTOR5',
+    output_dir=paste0(output_dir, '/LAMTOR5'),
     slingshot=TRUE,
     dimensionality_reduction='UMAP',
     dynamic_cell_size=FALSE,
