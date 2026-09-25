@@ -17,11 +17,10 @@
 #' @param dynamic_cell_size Logical; whether to scale cell size dynamically based on SNV and reference read counts. Default: FALSE.
 #' @param save_each_plot Logical; whether to save each plot individually. Default: FALSE.
 #' @param gridlines Logical; whether to include gridlines in the plots. Default: TRUE.
-#' @return A list containing JSON content for VAF, N_VAR, and N_REF plots.
+#' @return A list containing JSON content for VAF plots.
 #' @details
 #' This function generates an individual SNV plot using processed SNV data (processed_snv) and the dimensionality
-#' reduction embeddings from a Seurat object, and the SNV of interest in the following format, 1:155169447:C:T. The plots visualize key metrics such as VAF (Variant Allele Fraction),
-#' N_VAR (number of variant reads), and N_REF (number of reference reads).
+#' reduction embeddings from a Seurat object, and the SNV of interest in the following format, 1:155169447:C:T. The plots visualize key metrics such as mean VAF (Variant Allele Fraction).
 #'
 #' The plot can be saved individually in the specified output_dir if save_each_plot is set to TRUE.
 #'
@@ -47,7 +46,6 @@ single_gene_plot <- function(seurat_object, processed_snv, gene_of_choice, outpu
                                  gridlines = T) {
 
   cat("\nGenerating individual gene SNVs plot...\n")
-
   valid_reductions <- c("umap", "pca", "tsne")
   dimensionality_reduction <- tolower(dimensionality_reduction)
   if (!dimensionality_reduction %in% valid_reductions) {
@@ -59,8 +57,7 @@ single_gene_plot <- function(seurat_object, processed_snv, gene_of_choice, outpu
   df.dim <- as.data.frame(Embeddings(seurat_object, reduction = dimensionality_reduction))
   colnames(df.dim) <- c("x", "y", "z")
   df.snv <- processed_snv
-  df.snv <- df.snv[c("CHROM", "POS", "REF", "ALT", "ReadGroup",
-                     "SNVCount", "RefCount", "VAF", 'GENE')]
+  df.snv <- df.snv[c("CHROM", "POS", "REF", "ALT", "ReadGroup", "VAF", 'GENE')]
   gene_options <- paste(df.snv$GENE)
   if (gene_of_choice %in% gene_options) {
   gene_options <- gene_of_choice
@@ -92,11 +89,19 @@ single_gene_plot <- function(seurat_object, processed_snv, gene_of_choice, outpu
     df_subset <- df.snv[df.snv$GENE == selected_gene, ]
 
     vaf <- df_subset$VAF[match(colnames(seurat_object), df_subset$ReadGroup)]
-    snv_reads <- df_subset$SNVCount[match(colnames(seurat_object), df_subset$ReadGroup)]
-    ref_reads <- df_subset$RefCount[match(colnames(seurat_object), df_subset$ReadGroup)]
-    y <- data.frame(x = df.dim[, 1], y = df.dim[, 2], z = df.dim[, 3],
-                    vaf = vaf, ref_reads = ref_reads, snv_reads = snv_reads)
+    readgroup <- df_subset$ReadGroup[match(colnames(seurat_object), df_subset$ReadGroup)]
 
+    snv_info = data.frame(
+      vaf = vaf, ReadGroup=readgroup)
+
+    y <- data.frame(
+      x = df.dim[, 1], y = df.dim[, 2], z = df.dim[, 3], ReadGroup=rownames(df.dim))
+    y <- merge(y, snv_info, by='ReadGroup', all.x=TRUE)
+
+    mean_vaf = aggregate(vaf ~ ReadGroup, data=y, FUN=mean, na.rm=TRUE)
+    y <- y[!duplicated(y$ReadGroup),]
+    y$vaf <- NULL
+    y = merge(mean_vaf, y, by='ReadGroup')
     plots <- list()
 
     y$vaf_label <- "Undetected"
@@ -116,17 +121,16 @@ single_gene_plot <- function(seurat_object, processed_snv, gene_of_choice, outpu
         f_vaf <- f_vaf %>%
           add_trace(
             data = subset(y, vaf_label == cur_label), x = ~x, y = ~y, z = ~z,
-                          size = ~((snv_reads + ref_reads) / max(c(snv_reads, ref_reads),
-                          na.rm = T)) * 10, type = "scatter3d", mode = "markers",
-                          marker = list(color = pal[j], line = list(width = 0)), name = cur_label
+            type = "scatter3d", mode = "markers", size = 0.05,
+            marker = list(color = pal[j], line = list(width = 0)), name = cur_label
             )
       }
       else {
         f_vaf <- f_vaf %>%
           add_trace(
             data = subset(y, vaf_label == cur_label), x = ~x, y = ~y, z = ~z,
-                          size = 0.05, type = "scatter3d", mode = "markers",
-                          marker = list(color = pal[j], line = list(width = 0)), name = cur_label
+            type = "scatter3d", mode = "markers", size = 0.05,
+            marker = list(color = pal[j], line = list(width = 0)), name = cur_label
             )
       }
     }
@@ -144,73 +148,6 @@ single_gene_plot <- function(seurat_object, processed_snv, gene_of_choice, outpu
                                            zaxis = list(title = paste0(dim.title, "_3"))))
 
     plots[['VAF']] <- f_vaf
-
-    # N_VAR plots
-    f_varreads <- plot_ly(type = "scatter3d", mode = "markers+lines") %>%
-      add_trace(data = subset(y, !is.na(vaf)),
-                x = ~x, y = ~y, z = ~z, size = ifelse(dynamic_cell_size,
-                ~((snv_reads + ref_reads) / max(c(snv_reads, ref_reads),
-                na.rm = T)) * 10, 0.05), type = "scatter3d", mode = "markers",
-                marker = list(reversescale = T, color = ~snv_reads, colorscale = "YlOrRd",
-                showscale = T, opacity = 0.5, line = list(color = "#FEE5D9", width = 1),
-                colorbar = list(len = 0.5, y = 0.2)), name = "Cells with N_VAR") %>%
-      add_trace(data = subset(y, is.na(vaf)),
-                x = ~x, y = ~y, z = ~z, size = ifelse(dynamic_cell_size,
-                ~((snv_reads + ref_reads) / max(c(snv_reads, ref_reads),
-                na.rm = T)) * 10, 0.05), type = "scatter3d", mode = "markers",
-                marker = list(color = "#EBEBEB", line = list(width = 0), opacity = 0.5),
-                name = "Cells without N_VAR")
-
-    if (!is.null(curves)) {
-      f_varreads <- f_varreads %>%
-        add_trace(data = curves,
-                  x = ~get(paste0(dim.title, "_1")),
-                  y = ~get(paste0(dim.title, "_2")),
-                  z = ~get(paste0(dim.title, "_3")),
-                  split = ~Lineage, mode = "lines", line = list(width = 2))
-    }
-    f_varreads <- f_varreads %>%
-      layout(title = list(text = "N_VAR", font = list(color = title_color)),
-                          scene = list(xaxis = list(title = paste0(dim.title, "_1")),
-                          yaxis = list(title = paste0(dim.title, "_2")),
-                          zaxis = list(title = paste0(dim.title, "_3"))))
-
-    plots[['N_VAR']] <- f_varreads
-
-    # N_REF plots
-    f_refreads <- plot_ly(type = "scatter3d", mode = "markers+lines") %>%
-      add_trace(data = subset(y, vaf == 0 & ref_reads > 0),
-                x = ~x, y = ~y, z = ~z,
-                size = ifelse(dynamic_cell_size,
-                ~(snv_reads + ref_reads) / max(c(snv_reads, ref_reads),
-                na.rm = T) * 10, 0.05), type = "scatter3d", mode = "markers",
-                marker = list(reversescale = T, color = ~ref_reads,
-                colorscale = "Blues", showscale = T, opacity = 0.5,
-                line = list(color = "#EFF3FF", width = 1),
-                colorbar = list(len = 0.5, y = 0.2)), name = "Cells with N_REF") %>%
-      add_trace(data = subset(y, (vaf == 0 & ref_reads == 0) | (is.na(vaf) == 1) | (vaf > 0)),
-                x = ~x, y = ~y, z = ~z,
-                size = ifelse(dynamic_cell_size,
-                ~(snv_reads + ref_reads) / max(c(snv_reads, ref_reads),
-                na.rm = T) * 10, 0.05), type = "scatter3d", mode = "markers",
-                marker = list(color = "#EBEBEB", line = list(width = 0), opacity = 0.5),
-                name = "Cells without N_REF")
-
-    if (!is.null(curves)) {
-      f_refreads <- f_refreads %>%
-        add_trace(data = curves,
-                  x = ~get(paste0(dim.title, "_1")),
-                  y = ~get(paste0(dim.title, "_2")),
-                  z = ~get(paste0(dim.title, "_3")),
-                  mode = "lines", type = "scatter3d", split = ~Lineage)
-    }
-    f_refreads <- f_refreads %>%
-      layout(title = list(text = "N_REF", font = list(color = title_color)),
-             scene = list(xaxis = list(title = paste0(dim.title, "_1")),
-             yaxis = list(title = paste0(dim.title, "_2")),
-             zaxis = list(title = paste0(dim.title, "_3"))))
-
-    plots[['N_REF']] <- f_refreads
     return(plots)
   }
 
@@ -222,21 +159,11 @@ single_gene_plot <- function(seurat_object, processed_snv, gene_of_choice, outpu
       VAF = list(
         id = paste0("plot_VAF_", gene),
         json = plotly::plotly_json(plots[['VAF']], jsonedit = F)
-      ),
-      N_VAR = list(
-        id = paste0("plot_N_VAR_", gene),
-        json = plotly::plotly_json(plots[['N_VAR']], jsonedit = F)
-      ),
-      N_REF = list(
-        id = paste0("plot_N_REF_", gene),
-        json = plotly::plotly_json(plots[['N_REF']], jsonedit = F)
       )
     )}
   )
 
   plots_json <- unlist(plots_json, recursive = F)
-
-
   if (save_each_plot && !is.null(output_dir)) {
     save_snv_plot <- function(plot, selected_gene, plot_type) {
       file_path <- file.path(
@@ -253,15 +180,11 @@ single_gene_plot <- function(seurat_object, processed_snv, gene_of_choice, outpu
 
       suppressWarnings(saveWidget(as_widget(plot), file = file_path, selfcontained = F, libdir = "lib"))
     }
-
-   for (gene in gene_options) {
-     plots <- generate_gene_plots(selected_gene = gene, title_color = "black")
-     save_snv_plot(plots[["VAF"]], gene, "VAF")
-     save_snv_plot(plots[['N_VAR']], gene, "N_VAR")
-     save_snv_plot(plots[['N_REF']], gene, "N_REF")
-   }
+    for (gene in gene_options) {
+      plots <- generate_gene_plots(selected_gene = gene, title_color = "black")
+      save_snv_plot(plots[["VAF"]], gene, "VAF")
+    }
   }
-
   ind_snv_out <- list()
   ind_snv_out[["plots_json"]] <- plots_json
   ind_snv_out[["gene_options"]] <- gene_options
