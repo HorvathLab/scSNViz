@@ -106,24 +106,31 @@ individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_
                                paste0(dim.title, "_3"))
   }
 
-
-  generate_snv_plots <- function(selected_snv, title_color = "blue", dynamic_cell_size = F) {
+  generate_snv_plots <- function(
+    dfdim, dfsnv, selected_snv, srt_obj, title_color = "blue", dynamic_cell_size = F, enable_integrated) {
     selected_parts <- unlist(strsplit(selected_snv, ":"))
-    df_subset <- df.snv[df.snv$CHROM == selected_parts[1] &
-                          df.snv$POS == as.numeric(selected_parts[2]) &
-                          df.snv$REF ==selected_parts[3] &
-                          df.snv$ALT == selected_parts[4], ]
+    df_subset <- dfsnv[dfsnv$CHROM == selected_parts[1] &
+                          dfsnv$POS == as.numeric(selected_parts[2]) &
+                          dfsnv$REF ==selected_parts[3] &
+                          dfsnv$ALT == selected_parts[4], ]
 
-    vaf <- df_subset$VAF[match(colnames(seurat_object), df_subset$ReadGroup)]
-    snv_reads <- df_subset$SNVCount[match(colnames(seurat_object), df_subset$ReadGroup)]
-    ref_reads <- df_subset$RefCount[match(colnames(seurat_object), df_subset$ReadGroup)]
-    sample_id <- df_subset$sampleid[match(colnames(seurat_object), df_subset$ReadGroup)]
-    y <- data.frame(x = df.dim[, 1], y = df.dim[, 2], z = df.dim[, 3],
-                      vaf = vaf, ref_reads = ref_reads, snv_reads = snv_reads, sampleid = sample_id)
+    vaf <- df_subset$VAF[match(colnames(srt_obj), df_subset$ReadGroup)]
+    snv_reads <- df_subset$SNVCount[match(colnames(srt_obj), df_subset$ReadGroup)]
+    ref_reads <- df_subset$RefCount[match(colnames(srt_obj), df_subset$ReadGroup)]
+    readgroup <- df_subset$ReadGroup[match(colnames(srt_obj), df_subset$ReadGroup)]
 
+    snv_info = data.frame(
+      vaf = vaf, ref_reads = ref_reads,
+      snv_reads = snv_reads, ReadGroup=readgroup)
+
+    sample_id <- unlist(lapply(rownames(df.dim), function(x) strsplit(x, '_')[[1]][1][1]))
+    y <- data.frame(x=dfdim[, 1], y=dfdim[, 2], z=dfdim[, 3], sampleid=sample_id, ReadGroup=rownames(dfdim))
+    y <- merge(y, snv_info, by='ReadGroup', all.x=TRUE)
+    y$ReadGroup <- NULL
     plots <- list()
     if (enable_integrated){
       lvls_all = c()
+      y$vaf_label <- paste0(y$sampleid, " Undetected")
       for (i in 1:length(unique(y$sampleid)[!is.na(unique(y$sampleid))])){
         this.id = unique(y$sampleid)[!is.na(unique(y$sampleid))][i]
         y$vaf_label[y$sampleid == this.id] <- paste0(this.id," Undetected")
@@ -134,9 +141,9 @@ individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_
         lvls = c(paste0(this.id," Undetected"), paste0(this.id," 0 VAF, N_REF Only"),
                                                       paste0(this.id," 0<VAF<=0.25"), paste0(this.id," 0.25<VAF<=0.75"),
                                                       paste0(this.id," 0.75<VAF<=1.00"))
-        lvls_all = c(lvls,lvls_all)
-      }
-      y$vaf_label <- factor(y$vaf_label, levels = lvls_all)
+        lvls_all = c(lvls_all,lvls)
+      } 
+      y$vaf_label <- factor(as.character(y$vaf_label), levels = unique(lvls_all))
     } else {
       y$vaf_label <- "Undetected"
       y$vaf_label[y$vaf == 0] <- "0 VAF, N_REF Only"
@@ -147,45 +154,35 @@ individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_
                                                     "0<VAF<=0.25", "0.25<VAF<=0.75",
                                                     "0.75<VAF<=1.00"))
     }
+
+    get_vaf_color <- function(label, pal_vec) {
+      if (grepl("Undetected", label)) return(pal_vec[1])      # Light Gray
+      if (grepl("0 VAF", label))      return(pal_vec[2])      # Light Blue
+      if (grepl("0<VAF<=0.25", label)) return(pal_vec[3])     # Orange/Red
+      if (grepl("0.25<VAF<=0.75", label)) return(pal_vec[4])  # Dark Red
+      if (grepl("0.75<VAF<=1.00", label)) return(pal_vec[5])  # Deep Maroon
+      return("#A6ACAF") # Fallback gray if unmatched
+    }
+
     # VAF plots
     f_vaf <- plot_ly(type = "scatter3d", mode = "markers+lines")
-    for (j in 1:length(levels(y$vaf_label))) {
+    for (j in seq_along(levels(y$vaf_label))) {
       cur_label <- levels(y$vaf_label)[j]
-      if (dynamic_cell_size) {
-        if (enable_integrated){
-          f_vaf <- f_vaf %>% add_trace(
-            data = subset(y, vaf_label == cur_label), x = ~x, y = ~y, z = ~z,
-                          size = ~((snv_reads + ref_reads) / max(c(snv_reads, ref_reads),
-                          na.rm = T)) * 10, type = "scatter3d", mode = "markers",
-                          marker = list(color = pal[((j-1)%%5)+1], line = list(width = 0)), name = cur_label
-            )
-        } else {
-          f_vaf <- f_vaf %>%
-            add_trace(
-              data = subset(y, vaf_label == cur_label), x = ~x, y = ~y, z = ~z,
-                            size = ~((snv_reads + ref_reads) / max(c(snv_reads, ref_reads),
-                            na.rm = T)) * 10, type = "scatter3d", mode = "markers",
-                            marker = list(color = pal[j], line = list(width = 0)), name = cur_label
-              )
-        }
-      }
-      else {
-        if (enable_integrated){
-          f_vaf <- f_vaf %>%
-            add_trace(
-              data = subset(y, vaf_label == cur_label), x = ~x, y = ~y, z = ~z,
-                            size = 0.05, type = "scatter3d", mode = "markers",
-                            marker = list(color = pal[((j-1)%%5)+1], line = list(width = 0)), name = cur_label
-              )
-        } else {
-          f_vaf <- f_vaf %>%
-            add_trace(
-              data = subset(y, vaf_label == cur_label), x = ~x, y = ~y, z = ~z,
-                            size = 0.05, type = "scatter3d", mode = "markers",
-                            marker = list(color = pal[j], line = list(width = 0)), name = cur_label
-              )
-      }}
+      plot_sub <- subset(y, vaf_label == cur_label)
+      
+      if (nrow(plot_sub) == 0) next
+
+      assigned_color <- get_vaf_color(cur_label, pal)
+      
+      f_vaf <- f_vaf %>%
+        add_trace(
+          data = plot_sub, x = ~x, y = ~y, z = ~z,
+          size = 0.05, type = "scatter3d", mode = "markers",
+          marker = list(color = assigned_color, line = list(width = 0)), 
+          name = cur_label
+        )
     }
+
     if (!is.null(curves)) {
       f_vaf <- f_vaf %>% add_trace(data = curves,
                                    x = ~get(paste0(dim.title, "_1")),
@@ -203,7 +200,7 @@ individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_
 
     # N_VAR plots
     f_varreads <- plot_ly(type = "scatter3d", mode = "markers+lines")
-    max_metric_val = max(y['snv_reads'], na.rm=T)
+    max_metric_val = max(y$snv_reads, na.rm=T)
     for (i in 1:length(unique(y$sampleid)[!is.na(unique(y$sampleid))])) {
       this.id = unique(y$sampleid)[!is.na(unique(y$sampleid))][i]
       if (any(subset(y, !is.na(vaf) & sampleid==this.id)$snv_reads==max_metric_val)){
@@ -223,7 +220,7 @@ individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_
                 showscale = F, opacity = 0.5, line = list(color = "#FEE5D9", width = 1)),
                 name = paste0(this.id, " Cells with N_VAR"))   
       }
-      f_varreads <- f_varreads %>% add_trace(data = subset(y, (is.na(vaf)) | (vaf==0) & sampleid==this.id),
+      f_varreads <- f_varreads %>% add_trace(data = subset(y, (is.na(vaf) | vaf==0) & sampleid==this.id),
                 x = ~x, y = ~y, z = ~z, size = ifelse(dynamic_cell_size,
                 ~((snv_reads + ref_reads) / max(c(snv_reads, ref_reads),
                 na.rm = T)) * 10, 0.05), type = "scatter3d", mode = "markers",
@@ -308,7 +305,8 @@ individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_
   counter = 0
   # function to save plots' json
   plots_json <- mclapply(snv_options, function(snv) {
-    plots <- generate_snv_plots(snv, title_color = 'blue')
+    plots <- generate_snv_plots(
+      dfdim=df.dim, dfsnv=df.snv, selected_snv=snv, srt_obj=seurat_object, title_color = 'blue', enable_integrated=enable_integrated)
     list(
       VAF = list(
         id = paste0("plot_VAF_", gsub(":", "_", snv)),
@@ -349,7 +347,8 @@ individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_
     }
 
     mclapply(snv_options, function(snv) {
-    plots <- generate_snv_plots(snv, title_color = "black")
+    plots <- generate_snv_plots(
+      dfdim=df.dim, dfsnv=df.snv, selected_snv=snv, srt_obj=seurat_object, title_color = "black", enable_integrated=enable_integrated)
     save_snv_plot(plots[["VAF"]], snv, "VAF")
     save_snv_plot(plots[["N_VAR"]], snv, "N_VAR")
     save_snv_plot(plots[["N_REF"]], snv, "N_REF")

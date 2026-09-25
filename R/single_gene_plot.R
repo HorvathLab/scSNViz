@@ -89,10 +89,15 @@ single_gene_plot <- function(seurat_object, processed_snv, gene_of_choice, outpu
     df_subset <- df.snv[df.snv$GENE == selected_gene, ]
 
     vaf <- df_subset$VAF[match(colnames(seurat_object), df_subset$ReadGroup)]
-    readgroups <- df_subset$ReadGroup[match(colnames(seurat_object), df_subset$ReadGroup)]
- 
-    y <- data.frame(x = df.dim[, 1], y = df.dim[, 2], z = df.dim[, 3],
-                    vaf = vaf, ReadGroup = readgroups)
+    readgroup <- df_subset$ReadGroup[match(colnames(seurat_object), df_subset$ReadGroup)]
+
+    snv_info = data.frame(
+      vaf = vaf, ReadGroup=readgroup)
+
+    y <- data.frame(
+      x = df.dim[, 1], y = df.dim[, 2], z = df.dim[, 3], ReadGroup=rownames(df.dim))
+    y <- merge(y, snv_info, by='ReadGroup', all.x=TRUE)
+
     mean_vaf = aggregate(vaf ~ ReadGroup, data=y, FUN=mean, na.rm=TRUE)
     y <- y[!duplicated(y$ReadGroup),]
     y$vaf <- NULL
