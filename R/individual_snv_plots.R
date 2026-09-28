@@ -123,13 +123,13 @@ individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_
       vaf = vaf, ref_reads = ref_reads,
       snv_reads = snv_reads, ReadGroup=readgroup)
 
-    sample_id <- unlist(lapply(rownames(df.dim), function(x) strsplit(x, '_')[[1]][1][1]))
-    y <- data.frame(x=dfdim[, 1], y=dfdim[, 2], z=dfdim[, 3], sampleid=sample_id, ReadGroup=rownames(dfdim))
-    y <- merge(y, snv_info, by='ReadGroup', all.x=TRUE)
-    y$ReadGroup <- NULL
     plots <- list()
     if (enable_integrated){
       lvls_all = c()
+      sample_id <- unlist(lapply(rownames(df.dim), function(x) strsplit(x, '_')[[1]][1][1]))
+      y <- data.frame(x=dfdim[, 1], y=dfdim[, 2], z=dfdim[, 3], sampleid=sample_id, ReadGroup=rownames(dfdim))
+      y <- merge(y, snv_info, by='ReadGroup', all.x=TRUE)
+      y$ReadGroup <- NULL
       y$vaf_label <- paste0(y$sampleid, " Undetected")
       for (i in 1:length(unique(y$sampleid)[!is.na(unique(y$sampleid))])){
         this.id = unique(y$sampleid)[!is.na(unique(y$sampleid))][i]
@@ -142,9 +142,13 @@ individual_snv_plots <- function(seurat_object, processed_snv, sig_snvs, output_
                                                       paste0(this.id," 0<VAF<=0.25"), paste0(this.id," 0.25<VAF<=0.75"),
                                                       paste0(this.id," 0.75<VAF<=1.00"))
         lvls_all = c(lvls_all,lvls)
-      } 
+      }
       y$vaf_label <- factor(as.character(y$vaf_label), levels = unique(lvls_all))
     } else {
+      sample_id <- seurat_object$orig.ident
+      y <- data.frame(x=dfdim[, 1], y=dfdim[, 2], z=dfdim[, 3], sampleid=sample_id, ReadGroup=rownames(dfdim))
+      y <- merge(y, snv_info, by='ReadGroup', all.x=TRUE)
+      y$ReadGroup <- NULL
       y$vaf_label <- "Undetected"
       y$vaf_label[y$vaf == 0] <- "0 VAF, N_REF Only"
       y$vaf_label[0 < y$vaf & y$vaf <= 0.25] <- "0<VAF<=0.25"
